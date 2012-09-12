@@ -1,0 +1,25 @@
+{
+  "name":"chi",
+  "version":"0.0.0",
+  "description":"Chi is a framework for asynchronous programming in JS that goes beyond promises and provide you with more powerful abstractions.",
+  "keywords":["asynchronous", "promises", "event", "events", "promise", "reactive"],
+  "author":"Enrique Amodeo <eamodeorubio@gmail.com>",
+  "repository":{
+    "type":"git",
+    "url":"git://github.com/eamodeorubio/chi.git"
+  },
+  "engines":{
+    "node":"*",
+    "rhino":"*"
+  },
+  "scripts":{
+    "test":"./node_modules/mocha/bin/mocha --reporter tap ",
+    "watch":"./node_modules/mocha/bin/mocha --reporter spec --growl --watch"
+  },
+  "devDependencies":{
+    "expect.js":"*",
+    "sinon":"*",
+    "mocha":"*",
+    "coffee-script":">= 1.3.0"
+  }
+}

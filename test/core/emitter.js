@@ -1,8 +1,8 @@
 "use strict";
 
 var expect = require('expect.js'),
-    sinon = require('sinon'),
-    chi = require('../../lib/chi.js');
+    doubles = require('../doubles'),
+    chi = require('../../lib/chi');
 
 describe('An Emitter', function () {
   var anEmmitter;
@@ -20,9 +20,9 @@ describe('An Emitter', function () {
       var output1, output2, output3;
 
       beforeEach(function () {
-        output1 = {yield:sinon.spy()};
-        output2 = {yield:sinon.spy()};
-        output3 = {yield:sinon.spy()};
+        output1 = doubles.makeFeed();
+        output2 = doubles.makeFeed();
+        output3 = doubles.makeFeed();
 
         anEmmitter.chain(output1);
         anEmmitter.chain(output2);

@@ -1,6 +1,7 @@
 "use strict";
 
 var expect = require('expect.js'),
+    sinon = require('sinon'),
     chi = require('../../lib/chi.js');
 
 describe('An Emitter', function () {
@@ -15,13 +16,13 @@ describe('An Emitter', function () {
       expect(anEmmitter.yield).to.be.a('function');
     });
 
-    describe('given it is chained to several outputs', function () {
+    describe('given it is chained to several feeds', function () {
       var output1, output2, output3;
 
       beforeEach(function () {
-        output1 = {};
-        output2 = {};
-        output3 = {};
+        output1 = {yield:sinon.spy()};
+        output2 = {yield:sinon.spy()};
+        output3 = {yield:sinon.spy()};
 
         anEmmitter.chain(output1);
         anEmmitter.chain(output2);
@@ -35,8 +36,13 @@ describe('An Emitter', function () {
           anEmmitter.yield(value);
         });
 
-        it('will call yield on all chained outputs');
-        it('will pass the same argument to all piped outputs');
+        it('will call yield on all chained feeds exactly one time', function () {
+          expect(output1.yield.calledOnce).to.be.ok();
+          expect(output2.yield.calledOnce).to.be.ok();
+          expect(output3.yield.calledOnce).to.be.ok();
+        });
+
+        it('will pass the same argument to all chained feeds');
       });
     });
   });

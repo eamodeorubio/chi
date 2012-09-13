@@ -17,7 +17,7 @@ describe('An Emitter', function () {
     });
 
     describe('given it is chained to several feeds', function () {
-      var feed1, feed2, feed3;
+      var feed1, feed2, feed3, value = "yielded value";
 
       beforeEach(function () {
         feed1 = doubles.makeFeed();
@@ -30,8 +30,6 @@ describe('An Emitter', function () {
       });
 
       describe('when yield is invoked with a value, it', function () {
-        var value = "yielded value";
-
         beforeEach(function () {
           anEmmitter.yield(value);
         });

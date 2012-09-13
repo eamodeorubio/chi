@@ -42,7 +42,7 @@ describe('An Emitter can yield values', function () {
       });
     });
 
-    describe('and one of the chained feeds throws an exception', function () {
+    describe('when yield is invoked and one of the chained feeds throws an exception, it', function () {
       beforeEach(function () {
         feed1.yield.throws();
       });

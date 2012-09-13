@@ -17,16 +17,16 @@ describe('An Emitter', function () {
     });
 
     describe('given it is chained to several feeds', function () {
-      var output1, output2, output3;
+      var feed1, feed2, feed3;
 
       beforeEach(function () {
-        output1 = doubles.makeFeed();
-        output2 = doubles.makeFeed();
-        output3 = doubles.makeFeed();
+        feed1 = doubles.makeFeed();
+        feed2 = doubles.makeFeed();
+        feed3 = doubles.makeFeed();
 
-        anEmmitter.chain(output1);
-        anEmmitter.chain(output2);
-        anEmmitter.chain(output3);
+        anEmmitter.chain(feed1);
+        anEmmitter.chain(feed2);
+        anEmmitter.chain(feed3);
       });
 
       describe('when yield is invoked with a value, it', function () {
@@ -37,15 +37,24 @@ describe('An Emitter', function () {
         });
 
         it('will call yield on all chained feeds exactly one time', function () {
-          expect(output1.yield.calledOnce).to.be.ok();
-          expect(output2.yield.calledOnce).to.be.ok();
-          expect(output3.yield.calledOnce).to.be.ok();
+          expect(feed1.yield.calledOnce).to.be.ok();
+          expect(feed2.yield.calledOnce).to.be.ok();
+          expect(feed3.yield.calledOnce).to.be.ok();
         });
 
         it('will pass the same argument to all chained feeds', function () {
-          expect(output1.yield.calledWithExactly(value)).to.be.ok();
-          expect(output2.yield.calledWithExactly(value)).to.be.ok();
-          expect(output3.yield.calledWithExactly(value)).to.be.ok();
+          expect(feed1.yield.calledWithExactly(value)).to.be.ok();
+          expect(feed2.yield.calledWithExactly(value)).to.be.ok();
+          expect(feed3.yield.calledWithExactly(value)).to.be.ok();
+        });
+
+        it('and a feed is chained several times, when yield is invoked with a value, it will still perform exactly one call', function () {
+          anEmmitter.chain(feed1);
+          anEmmitter.chain(feed1);
+
+          anEmmitter.yield(value);
+
+          expect(feed1.yield.calledOnce).to.be.ok();
         });
       });
     });

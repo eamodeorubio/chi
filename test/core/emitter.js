@@ -42,7 +42,11 @@ describe('An Emitter', function () {
           expect(output3.yield.calledOnce).to.be.ok();
         });
 
-        it('will pass the same argument to all chained feeds');
+        it('will pass the same argument to all chained feeds', function () {
+          expect(output1.yield.calledWithExactly(value)).to.be.ok();
+          expect(output2.yield.calledWithExactly(value)).to.be.ok();
+          expect(output3.yield.calledWithExactly(value)).to.be.ok();
+        });
       });
     });
   });

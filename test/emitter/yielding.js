@@ -41,6 +41,18 @@ describe('An Emitter can yield values', function () {
         expect(feed2.yield.calledWithExactly(value)).to.be.ok();
       });
     });
+
+    describe('and one of the chained feeds throws an exception', function () {
+      beforeEach(function () {
+        feed1.yield.throws();
+      });
+
+      it('will still call yield on the other chained feeds', function () {
+        anEmmitter.yield(value);
+
+        expect(feed2.yield.called).to.be.ok();
+      });
+    });
   });
 
   describe('given it is chained to a feed several times', function () {

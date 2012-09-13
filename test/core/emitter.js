@@ -47,15 +47,15 @@ describe('An Emitter', function () {
           expect(feed2.yield.calledWithExactly(value)).to.be.ok();
           expect(feed3.yield.calledWithExactly(value)).to.be.ok();
         });
+      });
 
-        it('and a feed is chained several times, when yield is invoked with a value, it will still perform exactly one call', function () {
-          anEmmitter.chain(feed1);
-          anEmmitter.chain(feed1);
+      it('and a feed is chained several times, when yield is invoked with a value, it will still perform exactly one call', function () {
+        anEmmitter.chain(feed1);
+        anEmmitter.chain(feed1);
 
-          anEmmitter.yield(value);
+        anEmmitter.yield(value);
 
-          expect(feed1.yield.calledOnce).to.be.ok();
-        });
+        expect(feed1.yield.calledOnce).to.be.ok();
       });
     });
   });

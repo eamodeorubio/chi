@@ -1,6 +1,8 @@
 Chi
 ===
 
+(WORK STILL IN PROGRESS)
+
 [![Build Status](https://secure.travis-ci.org/eamodeorubio/chi.png)](http://travis-ci.org/eamodeorubio/chi)
 
 Because Promises aren't enough!!

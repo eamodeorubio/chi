@@ -1,9 +1,9 @@
 "use strict";
 
 var expect = require('expect.js'),
-    doubles = require('../doubles'),
-    utils = require('../../lib/internal/utils'),
-    chi = require('../../lib/chi');
+    doubles = require('doubles'),
+    utils = require('../lib/internal/utils'),
+    chi = require('../lib/chi');
 
 describe('An Emitter:', function () {
   var anEmitter, originalEventBus, aBus;

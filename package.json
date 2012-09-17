@@ -4,6 +4,12 @@
   "description":"Chi is a framework for asynchronous programming in JS that goes beyond promises and provide you with more powerful abstractions.",
   "keywords":["asynchronous", "promises", "event", "events", "promise", "reactive"],
   "author":"Enrique Amodeo <eamodeorubio@gmail.com>",
+  "licenses":[
+    {
+      "name":"MIT",
+      "url":"http://www.opensource.org/licenses/mit-license.php"
+    }
+  ],
   "repository":{
     "type":"git",
     "url":"git://github.com/eamodeorubio/chi.git"

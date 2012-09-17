@@ -41,6 +41,7 @@ describe('An Emitter can be chained:', function () {
       var result = chainResult.chain(expectedArgument);
 
       expect(aFeed.chain.calledOnce).to.be.ok();
+      expect(aFeed.chain.calledOn(aFeed)).to.be.ok();
       expect(result).to.be(expectedResult);
     });
   });

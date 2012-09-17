@@ -69,7 +69,10 @@ describe('An EventBus:', function () {
 
       it('will call yield on all subscribed feeds exactly one time', function () {
         expect(feed1.yield.calledOnce).to.be.ok();
+        expect(feed1.yield.calledOn(feed1)).to.be.ok();
+
         expect(feed2.yield.calledOnce).to.be.ok();
+        expect(feed2.yield.calledOn(feed2)).to.be.ok();
       });
 
       it('will pass the same argument to all subscribed feeds', function () {

@@ -36,7 +36,7 @@ describe('An Emitter can yield values:', function () {
       it('will return itself', function () {
         expect(result).to.be(anEmmitter);
       });
-      
+
       it('will call yield on all chained feeds exactly one time', function () {
         expect(feed1.yield.calledOnce).to.be.ok();
         expect(feed2.yield.calledOnce).to.be.ok();

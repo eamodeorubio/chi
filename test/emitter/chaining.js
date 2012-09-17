@@ -36,7 +36,7 @@ describe('An Emitter can be chained:', function () {
       var result, expectedResult, expectedArgument;
 
       beforeEach(function () {
-        expectedArgument = "some argument";
+        expectedArgument = 'some argument';
         expectedResult = "returned value from chained feed's chain() method";
 
         aFeed.chain.returns(expectedResult);
@@ -44,21 +44,29 @@ describe('An Emitter can be chained:', function () {
         result = chainResult.chain(expectedArgument);
       });
 
-      it("only once", function () {
+      it('only once', function () {
         expect(aFeed.chain.calledOnce).to.be.ok();
       });
 
-      it("using the chained feed as the runtime context", function () {
+      it('using the chained feed as the runtime context', function () {
         expect(aFeed.chain.calledOn(aFeed)).to.be.ok();
       });
 
-      it("using the same argument passed", function () {
+      it('using the same argument passed', function () {
         expect(aFeed.chain.calledWithExactly(expectedArgument)).to.be.ok();
       });
 
-      it("and will return the resulting value", function () {
+      it('and will return the resulting value', function () {
         expect(result).to.be(expectedResult);
       });
+    });
+  });
+
+  describe('chain() will throw if passed a non feed object: ', function () {
+    it('a null is not a feed', function () {
+      expect(function () {
+        anEmitter.chain(null);
+      }).to.throwError();
     });
   });
 });

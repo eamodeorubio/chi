@@ -4,7 +4,7 @@ var expect = require('expect.js'),
     doubles = require('../doubles'),
     chi = require('../../lib/chi');
 
-describe('An Emitter can yield values', function () {
+describe('An Emitter can yield values:', function () {
   var anEmmitter, value = "yielded value";
 
   beforeEach(function () {

@@ -14,6 +14,7 @@ describe('An Emitter can be chained:', function () {
     utils.EventBus = function () {
       return aBus;
     };
+
     anEmitter = chi.emitter();
   });
 

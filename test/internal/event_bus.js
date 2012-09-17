@@ -2,28 +2,28 @@
 
 var expect = require('expect.js'),
     doubles = require('../doubles'),
-    EventBus = require('../../lib/internal/utils');
+    utils = require('../../lib/internal/utils');
 
 describe('An EventBus:', function () {
-  var eventBus;
+  var bus;
 
   beforeEach(function () {
-    eventBus = new EventBus();
+    bus = new utils.EventBus();
   });
 
   it('it has a subscribe() method', function () {
-    expect(eventBus.subscribe).to.be.a('function');
+    expect(bus.subscribe).to.be.a('function');
   });
 
   describe('subscribe() will throw if passed a non feed object:', function () {
     it('a null is not a feed', function () {
       expect(function () {
-        eventBus.subscribe(null);
+        bus.subscribe(null);
       }).to.throwError();
     });
     it('an object with only a chain method is not a feed', function () {
       expect(function () {
-        eventBus.subscribe({
+        bus.subscribe({
           chain:function () {
           }
         });
@@ -31,7 +31,7 @@ describe('An EventBus:', function () {
     });
     it('an object with only a yield method is not a feed', function () {
       expect(function () {
-        eventBus.subscribe({
+        bus.subscribe({
           'yield':function () {
           }
         });
@@ -40,7 +40,7 @@ describe('An EventBus:', function () {
   });
 
   it('it has a publishYield() method', function () {
-    expect(eventBus.publishYield).to.be.a('function');
+    expect(bus.publishYield).to.be.a('function');
   });
 
   describe('given several feeds has been subscribed to it', function () {
@@ -52,15 +52,15 @@ describe('An EventBus:', function () {
       feed1 = doubles.makeFeed();
       feed2 = doubles.makeFeed();
 
-      eventBus.subscribe(feed1);
-      eventBus.subscribe(feed2);
+      bus.subscribe(feed1);
+      bus.subscribe(feed2);
     });
 
     describe('when publishYield is invoked with a value, it', function () {
       var result;
 
       beforeEach(function () {
-        result = eventBus.publishYield(value);
+        result = bus.publishYield(value);
       });
 
       it('will return nothing', function () {
@@ -84,7 +84,7 @@ describe('An EventBus:', function () {
       });
 
       it('will still call yield on the other feeds', function () {
-        eventBus.publishYield(value);
+        bus.publishYield(value);
 
         expect(feed2.yield.called).to.be.ok();
       });
@@ -96,13 +96,13 @@ describe('An EventBus:', function () {
     beforeEach(function () {
       aFeed = doubles.makeFeed();
 
-      eventBus.subscribe(aFeed);
-      eventBus.subscribe(aFeed);
-      eventBus.subscribe(aFeed);
+      bus.subscribe(aFeed);
+      bus.subscribe(aFeed);
+      bus.subscribe(aFeed);
     });
 
     it('when publishYield is invoked, it will still call yield on the subscribed feed exactly one time', function () {
-      eventBus.publishYield("not important");
+      bus.publishYield("not important");
 
       expect(aFeed.yield.calledOnce).to.be.ok();
     });

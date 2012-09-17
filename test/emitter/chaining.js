@@ -32,7 +32,7 @@ describe('An Emitter can be chained:', function () {
       expect(chainResult.chain).to.be.a('function');
     });
 
-    it("the returned object's chain() method will, delegate to the chained feed's chain() method", function () {
+    it("the returned object's chain() method will delegate to the chained feed's chain() method", function () {
       var expectedArgument = "some argument";
       var expectedResult = "returned value from chained feed's chain() method"
 

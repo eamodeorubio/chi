@@ -62,10 +62,18 @@ describe('An Emitter can be chained:', function () {
     });
   });
 
-  describe('chain() will throw if passed a non feed object: ', function () {
+  describe('chain() will throw if passed a non feed object:', function () {
     it('a null is not a feed', function () {
       expect(function () {
         anEmitter.chain(null);
+      }).to.throwError();
+    });
+    it('an object with only a chain method is not a feed', function () {
+      expect(function () {
+        anEmitter.chain({
+          chain:function () {
+          }
+        });
       }).to.throwError();
     });
   });

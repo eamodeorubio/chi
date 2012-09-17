@@ -2,13 +2,23 @@
 
 var expect = require('expect.js'),
     doubles = require('../doubles'),
+    utils = require('../../lib/internal/utils'),
     chi = require('../../lib/chi');
 
 describe('An Emitter can be chained:', function () {
-  var anEmitter;
+  var anEmitter, originalEventBus, aBus;
 
   beforeEach(function () {
+    aBus = doubles.makeBus();
+    originalEventBus = utils.EventBus;
+    utils.EventBus = function () {
+      return aBus;
+    };
     anEmitter = chi.emitter();
+  });
+
+  afterEach(function () {
+    utils.EventBus = originalEventBus;
   });
 
   it('it has a chain() method', function () {
@@ -21,6 +31,12 @@ describe('An Emitter can be chained:', function () {
       aFeed = doubles.makeFeed();
 
       chainResult = anEmitter.chain(aFeed);
+    });
+
+    it('will subscribe the feed to the bus', function () {
+      expect(aBus.subscribe.calledOnce).to.be.ok();
+      expect(aBus.subscribe.calledOn(aBus)).to.be.ok();
+      expect(aBus.subscribe.calledWithExactly(aFeed)).to.be.ok();
     });
 
     it('it will return a non null object', function () {
@@ -62,27 +78,11 @@ describe('An Emitter can be chained:', function () {
     });
   });
 
-  describe('chain() will throw if passed a non feed object:', function () {
-    it('a null is not a feed', function () {
-      expect(function () {
-        anEmitter.chain(null);
-      }).to.throwError();
-    });
-    it('an object with only a chain method is not a feed', function () {
-      expect(function () {
-        anEmitter.chain({
-          chain:function () {
-          }
-        });
-      }).to.throwError();
-    });
-    it('an object with only a yield method is not a feed', function () {
-      expect(function () {
-        anEmitter.chain({
-          'yield':function () {
-          }
-        });
-      }).to.throwError();
-    });
+  it('chain() will throw if bus.subscribe() throws', function () {
+    aBus.subscribe.throws();
+
+    expect(function () {
+      anEmitter.chain("some object");
+    }).to.throwError();
   });
 });

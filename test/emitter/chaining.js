@@ -76,5 +76,13 @@ describe('An Emitter can be chained:', function () {
         });
       }).to.throwError();
     });
+    it('an object with only a yield method is not a feed', function () {
+      expect(function () {
+        anEmitter.chain({
+          'yield':function () {
+          }
+        });
+      }).to.throwError();
+    });
   });
 });

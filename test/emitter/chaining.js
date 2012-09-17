@@ -32,17 +32,33 @@ describe('An Emitter can be chained:', function () {
       expect(chainResult.chain).to.be.a('function');
     });
 
-    it("the returned object's chain() method will delegate to the chained feed's chain() method", function () {
-      var expectedArgument = "some argument";
-      var expectedResult = "returned value from chained feed's chain() method"
+    describe("the returned object's chain() method will call the chained feed's chain() method", function () {
+      var result, expectedResult, expectedArgument;
 
-      aFeed.chain.withArgs(expectedArgument).returns(expectedResult);
+      beforeEach(function () {
+        expectedArgument = "some argument";
+        expectedResult = "returned value from chained feed's chain() method";
 
-      var result = chainResult.chain(expectedArgument);
+        aFeed.chain.returns(expectedResult);
 
-      expect(aFeed.chain.calledOnce).to.be.ok();
-      expect(aFeed.chain.calledOn(aFeed)).to.be.ok();
-      expect(result).to.be(expectedResult);
+        result = chainResult.chain(expectedArgument);
+      });
+
+      it("only once", function () {
+        expect(aFeed.chain.calledOnce).to.be.ok();
+      });
+
+      it("using the chained feed as the runtime context", function () {
+        expect(aFeed.chain.calledOn(aFeed)).to.be.ok();
+      });
+
+      it("using the same argument passed", function () {
+        expect(aFeed.chain.calledWithExactly(expectedArgument)).to.be.ok();
+      });
+
+      it("and will return the resulting value", function () {
+        expect(result).to.be(expectedResult);
+      });
     });
   });
 });

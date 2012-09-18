@@ -116,6 +116,7 @@ describe('An EventBus:', function () {
       bus.subscribe(subscriptor1);
       bus.subscribe(subscriptor2);
     });
+
     describe('given several events has been published', function () {
       beforeEach(function () {
         events.forEach(function (ev) {
@@ -136,14 +137,14 @@ describe('An EventBus:', function () {
           expect(subscriptor3.b.calledOnce).to.be.ok();
         });
 
-        it('it will be notified in order of publication', function() {
+        it('it will be notified in order of publication', function () {
           expect(subscriptor3.a.firstCall.calledBefore(subscriptor3.b.firstCall)).to.be.ok();
           expect(subscriptor3.a.secondCall.calledAfter(subscriptor3.b.firstCall)).to.be.ok();
         });
 
-        it('it will be not notified again is it is subscribed again', function() {
+        it('it will be not notified again is it is subscribed again', function () {
           bus.subscribe(subscriptor3);
-          
+
           expect(subscriptor3.a.callCount).to.be(2);
           expect(subscriptor3.b.callCount).to.be(1);
         });

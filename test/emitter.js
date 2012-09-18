@@ -148,4 +148,28 @@ describe('An Emitter:', function () {
       });
     });
   });
+
+  describe('can be marked as done:', function() {
+    it('it has a done() method', function () {
+      expect(anEmitter.done).to.be.a('function');
+    });
+
+    describe('when done is invoked, it', function () {
+      var result;
+
+      beforeEach(function () {
+        result = anEmitter.done();
+      });
+
+      it('will return itself', function () {
+        expect(result).to.be(anEmitter);
+      });
+
+      it('publish exactly once the "done" event on the bus with the throwed error', function () {
+        expect(aBus.publish.calledOnce).to.be.ok();
+        expect(aBus.publish.calledOn(aBus)).to.be.ok();
+        expect(aBus.publish.calledWithExactly('done')).to.be.ok();
+      });
+    });
+  });
 });

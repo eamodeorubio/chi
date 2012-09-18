@@ -140,6 +140,13 @@ describe('An EventBus:', function () {
           expect(subscriptor3.a.firstCall.calledBefore(subscriptor3.b.firstCall)).to.be.ok();
           expect(subscriptor3.a.secondCall.calledAfter(subscriptor3.b.firstCall)).to.be.ok();
         });
+
+        it('it will be not notified again is it is subscribed again', function() {
+          bus.subscribe(subscriptor3);
+          
+          expect(subscriptor3.a.callCount).to.be(2);
+          expect(subscriptor3.b.callCount).to.be(1);
+        });
       });
     });
 

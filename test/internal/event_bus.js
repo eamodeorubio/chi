@@ -39,119 +39,82 @@ describe('An EventBus:', function () {
     });
   });
 
-  it('it has a publishYield() method', function () {
-    expect(bus.publishYield).to.be.a('function');
+  it('it has a publish() method', function () {
+    expect(bus.publish).to.be.a('function');
   });
 
-  describe('given several feeds has been subscribed to it', function () {
-    var feed1, feed2, value, error;
+  function publishing(event) {
+    describe('knows how to publish events of type "' + event + '":', function () {
+      describe('given several feeds has been subscribed to it', function () {
+        var feed1, feed2, data;
 
-    beforeEach(function () {
-      value = 'yielded value';
-      error = 'throwed error';
+        beforeEach(function () {
+          data = 'passed data';
 
-      feed1 = doubles.makeFeed();
-      feed2 = doubles.makeFeed();
+          feed1 = doubles.makeFeed();
+          feed2 = doubles.makeFeed();
 
-      bus.subscribe(feed1);
-      bus.subscribe(feed2);
-    });
+          bus.subscribe(feed1);
+          bus.subscribe(feed2);
+        });
 
-    describe('when publishYield is invoked with a value, it', function () {
-      var result;
+        describe('when publishing event ' + event + ' with some data, it', function () {
+          var result;
 
-      beforeEach(function () {
-        result = bus.publishYield(value);
+          beforeEach(function () {
+            result = bus.publish(event, data);
+          });
+
+          it('will return nothing', function () {
+            expect(result).to.be(undefined);
+          });
+
+          it('will call the method ' + event + '() on all subscribed feeds exactly one time', function () {
+            expect(feed1[event].calledOnce).to.be.ok();
+            expect(feed1[event].calledOn(feed1)).to.be.ok();
+
+            expect(feed2[event].calledOnce).to.be.ok();
+            expect(feed2[event].calledOn(feed2)).to.be.ok();
+          });
+
+          it('will pass the same argument to all subscribed feeds', function () {
+            expect(feed1[event].calledWithExactly(data)).to.be.ok();
+            expect(feed2[event].calledWithExactly(data)).to.be.ok();
+          });
+        });
+
+        describe('when publishing event ' + event + ', and one of the subscribed feeds throws an exception, it', function () {
+          beforeEach(function () {
+            feed1[event].throws();
+          });
+
+          it('will still call ' + event + '() on the other feeds', function () {
+            bus.publish(event, data);
+
+            expect(feed2[event].called).to.be.ok();
+          });
+        });
       });
 
-      it('will return nothing', function () {
-        expect(result).to.be(undefined);
-      });
+      describe('given the same feed has beed subscribed several times', function () {
+        var aFeed;
+        beforeEach(function () {
+          aFeed = doubles.makeFeed();
 
-      it('will call yield on all subscribed feeds exactly one time', function () {
-        expect(feed1.yield.calledOnce).to.be.ok();
-        expect(feed1.yield.calledOn(feed1)).to.be.ok();
+          bus.subscribe(aFeed);
+          bus.subscribe(aFeed);
+          bus.subscribe(aFeed);
+        });
 
-        expect(feed2.yield.calledOnce).to.be.ok();
-        expect(feed2.yield.calledOn(feed2)).to.be.ok();
-      });
+        it('when publishing event ' + event + ', it will still call ' + event + '() on the duplicated feed exactly one time', function () {
+          bus.publish(event, "not important");
 
-      it('will pass the same argument to all subscribed feeds', function () {
-        expect(feed1.yield.calledWithExactly(value)).to.be.ok();
-        expect(feed2.yield.calledWithExactly(value)).to.be.ok();
-      });
-    });
-
-    describe('when publishYield is invoked and one of the subscribed feeds throws an exception, it', function () {
-      beforeEach(function () {
-        feed1.yield.throws();
-      });
-
-      it('will still call yield on the other feeds', function () {
-        bus.publishYield(value);
-
-        expect(feed2.yield.called).to.be.ok();
-      });
-    });
-
-    describe('when publishError is invoked with an error, it', function () {
-      var result;
-
-      beforeEach(function () {
-        result = bus.publishError(error);
-      });
-
-      it('will return nothing', function () {
-        expect(result).to.be(undefined);
-      });
-
-      it('will call throw on all subscribed feeds exactly one time', function () {
-        expect(feed1.throw.calledOnce).to.be.ok();
-        expect(feed1.throw.calledOn(feed1)).to.be.ok();
-
-        expect(feed2.throw.calledOnce).to.be.ok();
-        expect(feed2.throw.calledOn(feed2)).to.be.ok();
-      });
-
-      it('will pass the same argument to all subscribed feeds', function () {
-        expect(feed1.throw.calledWithExactly(error)).to.be.ok();
-        expect(feed2.throw.calledWithExactly(error)).to.be.ok();
+          expect(aFeed[event].calledOnce).to.be.ok();
+        });
       });
     });
+  }
 
-    describe('when publishError is invoked and one of the subscribed feeds throws an exception, it', function () {
-      beforeEach(function () {
-        feed1.throw.throws();
-      });
-
-      it('will still call yield on the other feeds', function () {
-        bus.publishError(error);
-
-        expect(feed2.throw.called).to.be.ok();
-      });
-    });
-  });
-
-  describe('given the same feed has beed subscribed several times', function () {
-    var aFeed;
-    beforeEach(function () {
-      aFeed = doubles.makeFeed();
-
-      bus.subscribe(aFeed);
-      bus.subscribe(aFeed);
-      bus.subscribe(aFeed);
-    });
-
-    it('when publishYield is invoked, it will still call yield on the subscribed feed exactly one time', function () {
-      bus.publishYield("not important");
-
-      expect(aFeed.yield.calledOnce).to.be.ok();
-    });
-
-    it('when publishError is invoked, it will still call throw on the subscribed feed exactly one time', function () {
-      bus.publishError("not important");
-
-      expect(aFeed.throw.calledOnce).to.be.ok();
-    });
-  });
+  publishing('yield');
+  publishing('throw');
 });

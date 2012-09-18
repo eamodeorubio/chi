@@ -97,28 +97,27 @@ describe('An EventBus:', function () {
   ['x', 'y', 'z'].forEach(knowsHowToNotify('fire'));
 
   describe('given several objects has been subscribed', function () {
-    var subscriptor1, subscriptor2;
+    var subscriptor1, subscriptor2, events;
     beforeEach(function () {
       subscriptor1 = doubles.double(['a', 'b']);
       subscriptor2 = doubles.double(['a', 'b']);
+      events = [
+        {
+          type:'a', data:22
+        },
+        {
+          type:'b', data:'asdad'
+        },
+        {
+          type:'a', data:2
+        }
+      ];
 
       bus.subscribe(subscriptor1);
       bus.subscribe(subscriptor2);
     });
     describe('given several events has been published', function () {
-      var events;
       beforeEach(function () {
-        events = [
-          {
-            type:'a', data:22
-          },
-          {
-            type:'b', data:'asdad'
-          },
-          {
-            type:'a', data:2
-          }
-        ];
         events.forEach(function (ev) {
           bus.publish(ev.type, ev.data);
         });
@@ -131,6 +130,23 @@ describe('An EventBus:', function () {
 
         expect(subscriptor3.a.calledTwice).to.be.ok();
         expect(subscriptor3.b.calledOnce).to.be.ok();
+      });
+    });
+
+    describe('given several events has been fired', function () {
+      beforeEach(function () {
+        events.forEach(function (ev) {
+          bus.fire(ev.type, ev.data);
+        });
+      });
+
+      it('when a new object is subscribed, it will not be notified of all prior published events', function () {
+        var subscriptor3 = doubles.double(['a', 'b']);
+
+        bus.subscribe(subscriptor3);
+
+        expect(subscriptor3.a.called).not.to.be.ok();
+        expect(subscriptor3.b.called).not.to.be.ok();
       });
     });
   });

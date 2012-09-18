@@ -165,7 +165,7 @@ describe('An Emitter:', function () {
         expect(result).to.be(anEmitter);
       });
 
-      it('publish exactly once the "done" event on the bus with the throwed error', function () {
+      it('publish exactly once the "done" event on the bus', function () {
         expect(aBus.publish.calledOnce).to.be.ok();
         expect(aBus.publish.calledOn(aBus)).to.be.ok();
         expect(aBus.publish.calledWithExactly('done')).to.be.ok();

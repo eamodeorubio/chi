@@ -6,6 +6,7 @@ module.exports = {
   makeFeed:function () {
     return {
       yield:sinon.stub(),
+      throw:sinon.stub(),
       chain:sinon.stub()
     };
   },

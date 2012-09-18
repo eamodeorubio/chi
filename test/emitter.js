@@ -190,7 +190,7 @@ describe('An Emitter:', function () {
 
       ['yield', 'throw'].forEach(completedEmitterCannotDo);
 
-      it('calling to done again will be ok, but no event will be published', function() {
+      it('calling to done again will be ok, but no event will be published', function () {
         anEmitter.done();
 
         expect(aBus.publish.calledOnce).to.be.ok();
@@ -204,7 +204,13 @@ describe('An Emitter:', function () {
         anEmitter.throw(error);
       });
 
-      ['yield', 'done'].forEach(completedEmitterCannotDo);
+      ['yield', 'throw', 'done'].forEach(completedEmitterCannotDo);
+
+      it('calling throw again with the same error will be ok, but no event will be published', function () {
+        anEmitter.throw(error);
+
+        expect(aBus.publish.calledOnce).to.be.ok();
+      });
     });
   })
 });

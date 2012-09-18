@@ -149,7 +149,7 @@ describe('An Emitter:', function () {
     });
   });
 
-  describe('can be marked as done:', function() {
+  describe('can be marked as done:', function () {
     it('it has a done() method', function () {
       expect(anEmitter.done).to.be.a('function');
     });
@@ -173,25 +173,32 @@ describe('An Emitter:', function () {
     });
   });
 
-  describe('can be completed:', function(){
-    describe('given it has been marked as done,', function() {
-      beforeEach(function() {
+  describe('can be completed:', function () {
+    function completedEmitterCannotDo(event) {
+      it('a call to "' + event + '" will throw and will not publish any event', function () {
+        expect(function () {
+          anEmitter[event]('not important');
+        }).to.throwError();
+        expect(aBus.publish.calledOnce).to.be.ok();
+      });
+    }
+
+    describe('given it has been marked as done,', function () {
+      beforeEach(function () {
         anEmitter.done();
       });
 
-      it('a call to yield will throw and will not publish any event', function() {
-        expect(function(){
-          anEmitter.yield('not important');
-        }).to.throwError();
-        expect(aBus.publish.calledOnce).to.be.ok();
+      ['yield', 'throw'].forEach(completedEmitterCannotDo);
+    });
+
+    describe('given it has been marked as throw,', function () {
+      var error;
+      beforeEach(function () {
+        error = 'some error';
+        anEmitter.throw(error);
       });
 
-      it('a call to throw will throw and will not publish any event', function() {
-        expect(function(){
-          anEmitter.throw('not important');
-        }).to.throwError();
-        expect(aBus.publish.calledOnce).to.be.ok();
-      });
+      ['yield', 'done'].forEach(completedEmitterCannotDo);
     });
   })
 });

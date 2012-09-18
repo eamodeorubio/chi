@@ -39,7 +39,7 @@ describe('An EventBus:', function () {
             var result;
 
             beforeEach(function () {
-              result = bus.publish(event, data);
+              result = bus[notificationType](event, data);
             });
 
             it('will return nothing', function () {
@@ -66,7 +66,7 @@ describe('An EventBus:', function () {
             });
 
             it('will still call ' + event + '() on the other objects', function () {
-              bus.publish(event, data);
+              bus[notificationType](event, data);
 
               expect(subscriptor2[event].called).to.be.ok();
             });
@@ -84,7 +84,7 @@ describe('An EventBus:', function () {
           });
 
           it('when ' + notificationType + 'ing an event ' + event + ', it will still call ' + event + '() on the duplicated object exactly one time', function () {
-            bus.publish(event, "not important");
+            bus[notificationType](event, "not important");
 
             expect(aobject[event].calledOnce).to.be.ok();
           });
@@ -94,6 +94,7 @@ describe('An EventBus:', function () {
   }
 
   ['x', 'y', 'z'].forEach(knowsHowToNotify('publish'));
+  ['x', 'y', 'z'].forEach(knowsHowToNotify('fire'));
 
   describe('given several objects has been subscribed', function () {
     var subscriptor1, subscriptor2;

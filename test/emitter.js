@@ -3,27 +3,21 @@
 var expect = require('expect.js'),
     doubles = require('./doubles'),
     utils = require('../lib/internal/utils'),
-    sinon = require('sinon'),
     chi = require('../lib/chi');
 
 describe('An Emitter:', function () {
   var anEmitter, originalEventBus, aBus, originalIsFeed;
 
   beforeEach(function () {
+    doubles.stubUtilsModule(utils);
     aBus = doubles.makeBus();
-    originalEventBus = utils.EventBus;
-    originalIsFeed = utils.isFeed;
-    utils.EventBus = function () {
-      return aBus;
-    };
-    utils.isFeed = sinon.stub();
+    utils.EventBus.returns(aBus);
 
     anEmitter = chi.emitter();
   });
 
   afterEach(function () {
-    utils.EventBus = originalEventBus;
-    utils.isFeed = originalIsFeed;
+    utils.restoreOriginal();
   });
 
   describe('can be chained:', function () {

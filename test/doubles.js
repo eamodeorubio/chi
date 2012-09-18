@@ -15,5 +15,14 @@ module.exports = {
       subscribe:sinon.stub(),
       publish:sinon.stub()
     };
+  },
+  stubUtilsModule:function (utils) {
+    sinon.stub(utils, "isFeed");
+    sinon.stub(utils, "EventBus");
+    utils.restoreOriginal = function () {
+      utils.isFeed.restore();
+      utils.EventBus.restore();
+      delete utils.restoreOriginal;
+    }
   }
 };

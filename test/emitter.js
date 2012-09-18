@@ -114,4 +114,30 @@ describe('An Emitter:', function () {
       });
     });
   });
+
+  describe('can throw errors:', function () {
+    var error = "throwed error";
+
+    it('it has a throw() method', function () {
+      expect(anEmitter.throw).to.be.a('function');
+    });
+
+    describe('when throw is invoked with a value, it', function () {
+      var result;
+
+      beforeEach(function () {
+        result = anEmitter.throw(error);
+      });
+
+      it('will return itself', function () {
+        expect(result).to.be(anEmitter);
+      });
+
+      it('will call publishError on the bus with the throwed error', function () {
+        expect(aBus.publishError.calledOnce).to.be.ok();
+        expect(aBus.publishError.calledOn(aBus)).to.be.ok();
+        expect(aBus.publishError.calledWithExactly(error)).to.be.ok();
+      });
+    });
+  });
 });

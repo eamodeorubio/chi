@@ -3,23 +3,27 @@
 var expect = require('expect.js'),
     doubles = require('./doubles'),
     utils = require('../lib/internal/utils'),
+    sinon = require('sinon'),
     chi = require('../lib/chi');
 
 describe('An Emitter:', function () {
-  var anEmitter, originalEventBus, aBus;
+  var anEmitter, originalEventBus, aBus, originalIsFeed;
 
   beforeEach(function () {
     aBus = doubles.makeBus();
     originalEventBus = utils.EventBus;
+    originalIsFeed = utils.isFeed;
     utils.EventBus = function () {
       return aBus;
     };
+    utils.isFeed = sinon.stub();
 
     anEmitter = chi.emitter();
   });
 
   afterEach(function () {
     utils.EventBus = originalEventBus;
+    utils.isFeed = originalIsFeed;
   });
 
   describe('can be chained:', function () {
@@ -30,6 +34,7 @@ describe('An Emitter:', function () {
     describe('when chain is invoked with another feed,', function () {
       var aFeed, chainResult;
       beforeEach(function () {
+        utils.isFeed.returns(true);
         aFeed = doubles.makeFeed();
 
         chainResult = anEmitter.chain(aFeed);
@@ -81,7 +86,16 @@ describe('An Emitter:', function () {
     });
 
     it('chain() will throw if bus.subscribe() throws', function () {
+      utils.isFeed.returns(true);
       aBus.subscribe.throws();
+
+      expect(function () {
+        anEmitter.chain("some object");
+      }).to.throwError();
+    });
+
+    it('chain() will throw if utils.isFeed() returns false', function () {
+      utils.isFeed.returns(false);
 
       expect(function () {
         anEmitter.chain("some object");

@@ -15,26 +15,6 @@ describe('An EventBus:', function () {
     expect(bus.subscribe).to.be.a('function');
   });
 
-  describe('subscribe() will throw if passed a non feed object:', function () {
-    it('a null is not a feed', function () {
-      expect(function () {
-        bus.subscribe(null);
-      }).to.throwError();
-    });
-
-    function methodIsMandatoryForFeeds(methodName) {
-      it('an object with no "' + methodName + '" method is not a feed', function () {
-        var almostAFeed = doubles.makeFeed();
-        delete almostAFeed[methodName];
-        expect(function () {
-          bus.subscribe(almostAFeed);
-        }).to.throwError();
-      });
-    }
-
-    ['yield', 'throw', 'chain'].forEach(methodIsMandatoryForFeeds);
-  });
-
   it('it has a publish() method', function () {
     expect(bus.publish).to.be.a('function');
   });

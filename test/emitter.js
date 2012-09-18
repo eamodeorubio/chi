@@ -178,10 +178,19 @@ describe('An Emitter:', function () {
       beforeEach(function() {
         anEmitter.done();
       });
-      it('a call to yield will throw', function() {
+
+      it('a call to yield will throw and will not publish any event', function() {
         expect(function(){
           anEmitter.yield('not important');
         }).to.throwError();
+        expect(aBus.publish.calledOnce).to.be.ok();
+      });
+
+      it('a call to throw will throw and will not publish any event', function() {
+        expect(function(){
+          anEmitter.throw('not important');
+        }).to.throwError();
+        expect(aBus.publish.calledOnce).to.be.ok();
       });
     });
   })

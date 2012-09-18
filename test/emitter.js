@@ -189,6 +189,12 @@ describe('An Emitter:', function () {
       });
 
       ['yield', 'throw'].forEach(completedEmitterCannotDo);
+
+      it('calling to done again will be ok, but no event will be published', function() {
+        anEmitter.done();
+
+        expect(aBus.publish.calledOnce).to.be.ok();
+      });
     });
 
     describe('given it has been marked as throw,', function () {

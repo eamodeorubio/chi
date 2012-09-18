@@ -44,10 +44,11 @@ describe('An EventBus:', function () {
   });
 
   describe('given several feeds has been subscribed to it', function () {
-    var feed1, feed2, value;
+    var feed1, feed2, value, error;
 
     beforeEach(function () {
-      value = "yielded value";
+      value = 'yielded value';
+      error = 'throwed error';
 
       feed1 = doubles.makeFeed();
       feed2 = doubles.makeFeed();
@@ -92,6 +93,43 @@ describe('An EventBus:', function () {
         expect(feed2.yield.called).to.be.ok();
       });
     });
+
+    describe('when publishError is invoked with an error, it', function () {
+      var result;
+
+      beforeEach(function () {
+        result = bus.publishError(error);
+      });
+
+      it('will return nothing', function () {
+        expect(result).to.be(undefined);
+      });
+
+      it('will call throw on all subscribed feeds exactly one time', function () {
+        expect(feed1.throw.calledOnce).to.be.ok();
+        expect(feed1.throw.calledOn(feed1)).to.be.ok();
+
+        expect(feed2.throw.calledOnce).to.be.ok();
+        expect(feed2.throw.calledOn(feed2)).to.be.ok();
+      });
+
+      it('will pass the same argument to all subscribed feeds', function () {
+        expect(feed1.throw.calledWithExactly(error)).to.be.ok();
+        expect(feed2.throw.calledWithExactly(error)).to.be.ok();
+      });
+    });
+
+    describe('when publishError is invoked and one of the subscribed feeds throws an exception, it', function () {
+      beforeEach(function () {
+        feed1.throw.throws();
+      });
+
+      it('will still call yield on the other feeds', function () {
+        bus.publishError(error);
+
+        expect(feed2.throw.called).to.be.ok();
+      });
+    });
   });
 
   describe('given the same feed has beed subscribed several times', function () {
@@ -108,6 +146,12 @@ describe('An EventBus:', function () {
       bus.publishYield("not important");
 
       expect(aFeed.yield.calledOnce).to.be.ok();
+    });
+
+    it('when publishError is invoked, it will still call throw on the subscribed feed exactly one time', function () {
+      bus.publishError("not important");
+
+      expect(aFeed.throw.calledOnce).to.be.ok();
     });
   });
 });

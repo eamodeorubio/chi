@@ -123,13 +123,23 @@ describe('An EventBus:', function () {
         });
       });
 
-      it('when a new object is subscribed, it will be notified of all prior published events', function () {
-        var subscriptor3 = doubles.double(['a', 'b']);
+      describe('when a new object is subscribed,', function () {
+        var subscriptor3;
+        beforeEach(function () {
+          subscriptor3 = doubles.double(['a', 'b']);
 
-        bus.subscribe(subscriptor3);
+          bus.subscribe(subscriptor3);
+        });
 
-        expect(subscriptor3.a.calledTwice).to.be.ok();
-        expect(subscriptor3.b.calledOnce).to.be.ok();
+        it('it will be notified of all prior published events', function () {
+          expect(subscriptor3.a.calledTwice).to.be.ok();
+          expect(subscriptor3.b.calledOnce).to.be.ok();
+        });
+
+        it('it will be notified in order of publication', function() {
+          expect(subscriptor3.a.firstCall.calledBefore(subscriptor3.b.firstCall)).to.be.ok();
+          expect(subscriptor3.a.secondCall.calledAfter(subscriptor3.b.firstCall)).to.be.ok();
+        });
       });
     });
 

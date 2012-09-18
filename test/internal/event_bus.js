@@ -21,34 +21,25 @@ describe('An EventBus:', function () {
         bus.subscribe(null);
       }).to.throwError();
     });
-    it('an object with no chain method is not a feed', function () {
-      var almostAFeed=doubles.makeFeed();
-      delete almostAFeed.chain;
-      expect(function () {
-        bus.subscribe(almostAFeed);
-      }).to.throwError();
-    });
-    it('an object with no yield method is not a feed', function () {
-      var almostAFeed=doubles.makeFeed();
-      delete almostAFeed.yield;
-      expect(function () {
-        bus.subscribe(almostAFeed);
-      }).to.throwError();
-    });
-    it('an object with only no throw method is not a feed', function () {
-      var almostAFeed=doubles.makeFeed();
-      delete almostAFeed.throw;
-      expect(function () {
-        bus.subscribe(almostAFeed);
-      }).to.throwError();
-    });
+
+    function methodIsMandatoryForFeeds(methodName) {
+      it('an object with no "' + methodName + '" method is not a feed', function () {
+        var almostAFeed = doubles.makeFeed();
+        delete almostAFeed[methodName];
+        expect(function () {
+          bus.subscribe(almostAFeed);
+        }).to.throwError();
+      });
+    }
+
+    ['yield', 'throw', 'chain'].forEach(methodIsMandatoryForFeeds);
   });
 
   it('it has a publish() method', function () {
     expect(bus.publish).to.be.a('function');
   });
 
-  function publishing(event) {
+  function knowsHowToPublish(event) {
     describe('knows how to publish events of type "' + event + '":', function () {
       describe('given several feeds has been subscribed to it', function () {
         var feed1, feed2, data;
@@ -120,6 +111,5 @@ describe('An EventBus:', function () {
     });
   }
 
-  publishing('yield');
-  publishing('throw');
+  ['yield', 'throw'].forEach(knowsHowToPublish);
 });

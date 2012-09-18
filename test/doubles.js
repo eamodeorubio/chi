@@ -13,8 +13,7 @@ module.exports = {
   makeBus:function () {
     return {
       subscribe:sinon.stub(),
-      publishYield:sinon.stub(),
-      publishError:sinon.stub()
+      publish:sinon.stub()
     };
   }
 };

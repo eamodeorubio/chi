@@ -110,7 +110,7 @@ describe('An Emitter:', function () {
       it('will publish exactly once the "yield" event on the bus with the yielded value', function () {
         expect(aBus.publish.calledOnce).to.be.ok();
         expect(aBus.publish.calledOn(aBus)).to.be.ok();
-        expect(aBus.publish.calledWithExactly('yield'.value)).to.be.ok();
+        expect(aBus.publish.calledWithExactly('yield', value)).to.be.ok();
       });
     });
   });

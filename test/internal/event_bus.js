@@ -21,20 +21,25 @@ describe('An EventBus:', function () {
         bus.subscribe(null);
       }).to.throwError();
     });
-    it('an object with only a chain method is not a feed', function () {
+    it('an object with no chain method is not a feed', function () {
+      var almostAFeed=doubles.makeFeed();
+      delete almostAFeed.chain;
       expect(function () {
-        bus.subscribe({
-          chain:function () {
-          }
-        });
+        bus.subscribe(almostAFeed);
       }).to.throwError();
     });
-    it('an object with only a yield method is not a feed', function () {
+    it('an object with no yield method is not a feed', function () {
+      var almostAFeed=doubles.makeFeed();
+      delete almostAFeed.yield;
       expect(function () {
-        bus.subscribe({
-          'yield':function () {
-          }
-        });
+        bus.subscribe(almostAFeed);
+      }).to.throwError();
+    });
+    it('an object with only no throw method is not a feed', function () {
+      var almostAFeed=doubles.makeFeed();
+      delete almostAFeed.throw;
+      expect(function () {
+        bus.subscribe(almostAFeed);
       }).to.throwError();
     });
   });

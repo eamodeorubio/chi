@@ -115,10 +115,10 @@ describe('An Emitter:', function () {
         expect(result).to.be(anEmitter);
       });
 
-      it('will notify exactly once the "yield" event on the bus with the yielded value', function () {
-        expect(aBus.notify.calledOnce).to.be.ok();
-        expect(aBus.notify.calledOn(aBus)).to.be.ok();
-        expect(aBus.notify.calledWithExactly('yield', value)).to.be.ok();
+      it('will fire exactly once the "yield" event on the bus with the yielded value', function () {
+        expect(aBus.fire.calledOnce).to.be.ok();
+        expect(aBus.fire.calledOn(aBus)).to.be.ok();
+        expect(aBus.fire.calledWithExactly('yield', value)).to.be.ok();
       });
     });
   });
@@ -175,12 +175,12 @@ describe('An Emitter:', function () {
 
   describe('can be completed:', function () {
     function completedEmitterCannotDo(event) {
-      it('a call to "' + event + '" will throw and will not sent any event', function () {
+      it('a call to "' + event + '" will throw and will not send any event', function () {
         expect(function () {
           anEmitter[event]('not important');
         }).to.throwError();
         if (event === 'yield')
-          expect(aBus.notify.called).not.to.be.ok();
+          expect(aBus.fire.called).not.to.be.ok();
         else
           expect(aBus.publish.calledOnce).to.be.ok();
       });

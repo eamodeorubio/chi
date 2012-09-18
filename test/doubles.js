@@ -4,10 +4,10 @@ var sinon = require('sinon');
 
 module.exports = {
   makeFeed:function () {
-    return this.double(['yield','throw','done','chain']);
+    return this.double(['yield', 'throw', 'done', 'chain']);
   },
   makeBus:function () {
-    return this.double(['subscribe','notify','publish']);
+    return this.double(['subscribe', 'fire', 'publish']);
   },
   stubUtilsModule:function (utils) {
     sinon.stub(utils, "isFeed");

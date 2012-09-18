@@ -21,17 +21,17 @@ describe('An EventBus:', function () {
 
   function knowsHowToPublish(event) {
     describe('knows how to publish events of type "' + event + '":', function () {
-      describe('given several feeds has been subscribed to it', function () {
-        var feed1, feed2, data;
+      describe('given several objects has been subscribed to it', function () {
+        var subscriptor1, subscriptor2, data;
 
         beforeEach(function () {
           data = 'passed data';
 
-          feed1 = doubles.makeFeed();
-          feed2 = doubles.makeFeed();
+          subscriptor1 = doubles.double(['x','y','z']);
+          subscriptor2 = doubles.double(['x','y','z']);
 
-          bus.subscribe(feed1);
-          bus.subscribe(feed2);
+          bus.subscribe(subscriptor1);
+          bus.subscribe(subscriptor2);
         });
 
         describe('when publishing event ' + event + ' with some data, it', function () {
@@ -45,53 +45,53 @@ describe('An EventBus:', function () {
             expect(result).to.be(undefined);
           });
 
-          it('will call the method ' + event + '() on all subscribed feeds exactly one time', function () {
-            expect(feed1[event].calledOnce).to.be.ok();
-            expect(feed1[event].calledOn(feed1)).to.be.ok();
+          it('will call the method ' + event + '() on all subscriptors exactly one time', function () {
+            expect(subscriptor1[event].calledOnce).to.be.ok();
+            expect(subscriptor1[event].calledOn(subscriptor1)).to.be.ok();
 
-            expect(feed2[event].calledOnce).to.be.ok();
-            expect(feed2[event].calledOn(feed2)).to.be.ok();
+            expect(subscriptor2[event].calledOnce).to.be.ok();
+            expect(subscriptor2[event].calledOn(subscriptor2)).to.be.ok();
           });
 
-          it('will pass the same argument to all subscribed feeds', function () {
-            expect(feed1[event].calledWithExactly(data)).to.be.ok();
-            expect(feed2[event].calledWithExactly(data)).to.be.ok();
+          it('will pass the same argument to all subscriptors', function () {
+            expect(subscriptor1[event].calledWithExactly(data)).to.be.ok();
+            expect(subscriptor2[event].calledWithExactly(data)).to.be.ok();
           });
         });
 
-        describe('when publishing event ' + event + ', and one of the subscribed feeds throws an exception, it', function () {
+        describe('when publishing event ' + event + ', and one of the subscriptors throws an exception, it', function () {
           beforeEach(function () {
-            feed1[event].throws();
+            subscriptor1[event].throws();
           });
 
-          it('will still call ' + event + '() on the other feeds', function () {
+          it('will still call ' + event + '() on the other objects', function () {
             bus.publish(event, data);
 
-            expect(feed2[event].called).to.be.ok();
+            expect(subscriptor2[event].called).to.be.ok();
           });
         });
       });
 
-      describe('given the same feed has beed subscribed several times', function () {
-        var aFeed;
+      describe('given the same object has beed subscribed several times', function () {
+        var aobject;
         beforeEach(function () {
-          aFeed = doubles.makeFeed();
+          aobject = doubles.double(['x','y','z']);
 
-          bus.subscribe(aFeed);
-          bus.subscribe(aFeed);
-          bus.subscribe(aFeed);
+          bus.subscribe(aobject);
+          bus.subscribe(aobject);
+          bus.subscribe(aobject);
         });
 
-        it('when publishing event ' + event + ', it will still call ' + event + '() on the duplicated feed exactly one time', function () {
+        it('when publishing event ' + event + ', it will still call ' + event + '() on the duplicated object exactly one time', function () {
           bus.publish(event, "not important");
 
-          expect(aFeed[event].calledOnce).to.be.ok();
+          expect(aobject[event].calledOnce).to.be.ok();
         });
       });
     });
   }
 
-  ['yield', 'throw'].forEach(knowsHowToPublish);
+  ['x', 'y', 'z'].forEach(knowsHowToPublish);
 
   describe('given several objects has been subscribed', function () {
     var subscriptor1, subscriptor2;
@@ -121,7 +121,7 @@ describe('An EventBus:', function () {
         });
       });
 
-      it('when a new feed is subscribed, it will be notified of all prior published events', function () {
+      it('when a new object is subscribed, it will be notified of all prior published events', function () {
         var subscriptor3 = doubles.double(['a', 'b']);
 
         bus.subscribe(subscriptor3);

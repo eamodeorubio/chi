@@ -14,6 +14,7 @@ module.exports = {
   makeBus:function () {
     return {
       subscribe:sinon.stub(),
+      notify:sinon.stub(),
       publish:sinon.stub()
     };
   },

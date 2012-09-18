@@ -172,4 +172,14 @@ describe('An Emitter:', function () {
       });
     });
   });
+
+  describe('can be completed:', function(){
+    describe('given it has been marked as done,', function() {
+      it('a call to yield will throw', function() {
+        expect(function(){
+          anEmitter.yield('not important');
+        }).to.throwError();
+      });
+    });
+  })
 });

@@ -20,7 +20,7 @@ describe('isFeed():', function () {
 
   ['yield', 'throw', 'done', 'chain'].forEach(objectWithoutThisMethodIsNotAFeed);
 
-  it('an object with "yield", "throw" and "chain" method is a feed', function () {
+  it('an object with "yield", "throw", "done" and "chain" method is a feed', function () {
     expect(utils.isFeed(doubles.makeFeed())).to.be.ok();
   });
 });

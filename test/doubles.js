@@ -7,6 +7,7 @@ module.exports = {
     return {
       yield:sinon.stub(),
       throw:sinon.stub(),
+      done:sinon.stub(),
       chain:sinon.stub()
     };
   },

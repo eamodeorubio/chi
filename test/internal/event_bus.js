@@ -92,4 +92,44 @@ describe('An EventBus:', function () {
   }
 
   ['yield', 'throw'].forEach(knowsHowToPublish);
+
+  describe('given several objects has been subscribed', function () {
+    var subscriptor1, subscriptor2;
+    beforeEach(function () {
+      subscriptor1 = doubles.double(['a', 'b']);
+      subscriptor2 = doubles.double(['a', 'b']);
+
+      bus.subscribe(subscriptor1);
+      bus.subscribe(subscriptor2);
+    });
+    describe('given several events has been published', function () {
+      var events;
+      beforeEach(function () {
+        events = [
+          {
+            type:'a', data:22
+          },
+          {
+            type:'b', data:'asdad'
+          },
+          {
+            type:'a', data:2
+          }
+        ];
+        events.forEach(function (ev) {
+          bus.publish(ev.type, ev.data);
+        });
+      });
+
+      it('when a new feed is subscribed, it will be notified of all prior published events', function () {
+        var subscriptor3 = doubles.double(['a', 'b']);
+
+        bus.subscribe(subscriptor3);
+
+        expect(subscriptor3.a.calledTwice).to.be.ok();
+        expect(subscriptor3.b.calledOnce).to.be.ok();
+      });
+
+    });
+  });
 });

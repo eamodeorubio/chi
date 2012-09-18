@@ -4,19 +4,10 @@ var sinon = require('sinon');
 
 module.exports = {
   makeFeed:function () {
-    return {
-      yield:sinon.stub(),
-      throw:sinon.stub(),
-      done:sinon.stub(),
-      chain:sinon.stub()
-    };
+    return this.double(['yield','throw','done','chain']);
   },
   makeBus:function () {
-    return {
-      subscribe:sinon.stub(),
-      notify:sinon.stub(),
-      publish:sinon.stub()
-    };
+    return this.double(['subscribe','notify','publish']);
   },
   stubUtilsModule:function (utils) {
     sinon.stub(utils, "isFeed");
@@ -26,5 +17,12 @@ module.exports = {
       utils.EventBus.restore();
       delete utils.restoreOriginal;
     }
+  },
+  "double":function (methodNames) {
+    var r = {};
+    methodNames.forEach(function (methodName) {
+      r[methodName] = sinon.stub();
+    });
+    return r;
   }
 };

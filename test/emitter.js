@@ -107,10 +107,10 @@ describe('An Emitter:', function () {
         expect(result).to.be(anEmitter);
       });
 
-      it('will call publishYield on the bus with the yielded value', function () {
-        expect(aBus.publishYield.calledOnce).to.be.ok();
-        expect(aBus.publishYield.calledOn(aBus)).to.be.ok();
-        expect(aBus.publishYield.calledWithExactly(value)).to.be.ok();
+      it('will publish exactly once the "yield" event on the bus with the yielded value', function () {
+        expect(aBus.publish.calledOnce).to.be.ok();
+        expect(aBus.publish.calledOn(aBus)).to.be.ok();
+        expect(aBus.publish.calledWithExactly('yield'.value)).to.be.ok();
       });
     });
   });
@@ -133,10 +133,10 @@ describe('An Emitter:', function () {
         expect(result).to.be(anEmitter);
       });
 
-      it('will call publishError on the bus with the throwed error', function () {
-        expect(aBus.publishError.calledOnce).to.be.ok();
-        expect(aBus.publishError.calledOn(aBus)).to.be.ok();
-        expect(aBus.publishError.calledWithExactly(error)).to.be.ok();
+      it('publish exactly once the "throw" event on the bus with the throwed error', function () {
+        expect(aBus.publish.calledOnce).to.be.ok();
+        expect(aBus.publish.calledOn(aBus)).to.be.ok();
+        expect(aBus.publish.calledWithExactly('throw', error)).to.be.ok();
       });
     });
   });

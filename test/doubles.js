@@ -15,15 +15,25 @@ module.exports = {
   makeBus:function (optName) {
     return this.double(['subscribe', 'fire', 'publish'], optName ? optName : "<anonymous bus>");
   },
-  stubBusModule:function (utils) {
-    sinon.stub(utils, "EventBus");
-    utils.restoreOriginal = function () {
-      utils.EventBus.restore();
-      delete utils.restoreOriginal;
-    };
+  stubBusModule:function (busModule) {
+    this.stubModule(busModule, ['EventBus']);
+  },
+  stubFeedsModule:function (feeds) {
+    this.stubModule(feeds, ['feed', 'yieldingState', 'failedState', 'isFeed', 'successState']);
   },
   stubFunction:function () {
     return sinon.stub();
+  },
+  stubModule:function (module, methods) {
+    methods.forEach(function (methodName) {
+      sinon.stub(module, methodName);
+    });
+    module.restoreOriginal = function () {
+      methods.forEach(function (methodName) {
+        module[methodName].restore();
+      });
+      delete module.restoreOriginal;
+    };
   },
   "double":function (methodNames, optName) {
     var r = {

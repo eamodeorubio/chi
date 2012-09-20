@@ -4,7 +4,7 @@ var expect = require('expect.js'),
     doubles = require('../doubles'),
     busModule = require('../../lib/internal/bus');
 
-describe('An EventBus:', function () {
+describe('Given an EventBus,', function () {
   var bus;
 
   beforeEach(function () {
@@ -21,7 +21,7 @@ describe('An EventBus:', function () {
 
   function knowsHowToNotify(notificationType) {
     return function (event) {
-      describe('knows how to ' + notificationType + ' events of type "' + event + '":', function () {
+      describe('it knows how to ' + notificationType + ' events of type "' + event + '":', function () {
         describe('given several objects has been subscribed to it', function () {
           var subscriptor1, subscriptor2, data;
 
@@ -96,7 +96,7 @@ describe('An EventBus:', function () {
   ['x', 'y', 'z'].forEach(knowsHowToNotify('publish'));
   ['x', 'y', 'z'].forEach(knowsHowToNotify('fire'));
 
-  describe('given several objects has been subscribed', function () {
+  describe('and that several objects has been subscribed', function () {
     var subscriptor1, subscriptor2, events;
     beforeEach(function () {
       subscriptor1 = doubles.double(['a', 'b']);
@@ -117,7 +117,7 @@ describe('An EventBus:', function () {
       bus.subscribe(subscriptor2);
     });
 
-    describe('given several events has been published', function () {
+    describe('and that several events has been published,', function () {
       beforeEach(function () {
         events.forEach(function (ev) {
           bus.publish(ev.type, ev.data);
@@ -151,7 +151,7 @@ describe('An EventBus:', function () {
       });
     });
 
-    describe('given several events has been fired', function () {
+    describe('and that several events has been fired,', function () {
       beforeEach(function () {
         events.forEach(function (ev) {
           bus.fire(ev.type, ev.data);

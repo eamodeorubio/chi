@@ -6,6 +6,9 @@ module.exports = {
   makeFeed:function () {
     return this.double(['yield', 'throw', 'done', 'chain']);
   },
+  makeFeedState:function () {
+    return this.double(['yield', 'throw', 'done']);
+  },
   makeBus:function () {
     return this.double(['subscribe', 'fire', 'publish']);
   },

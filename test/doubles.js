@@ -3,14 +3,17 @@
 var sinon = require('sinon');
 
 module.exports = {
-  makeFeed:function () {
-    return this.double(['yield', 'throw', 'done', 'chain']);
+  makeFeed:function (optName) {
+    return this.double(['yield', 'throw', 'done', 'chain'], optName ? optName : "<anonymous feed>");
   },
-  makeFeedState:function () {
-    return this.double(['yield', 'throw', 'done']);
+  makeFeedState:function (optName) {
+    return this.double(['yield', 'throw', 'done'], optName ? optName : "<anonymous feed state>");
   },
-  makeBus:function () {
-    return this.double(['subscribe', 'fire', 'publish']);
+  makeFeedStateFactory:function (optName) {
+    return this.double(['yieldingState', 'failedState', 'successState'], optName ? optName : "<anonymous state factory>");
+  },
+  makeBus:function (optName) {
+    return this.double(['subscribe', 'fire', 'publish'], optName ? optName : "<anonymous bus>");
   },
   stubBusModule:function (utils) {
     sinon.stub(utils, "EventBus");
@@ -19,8 +22,12 @@ module.exports = {
       delete utils.restoreOriginal;
     };
   },
-  "double":function (methodNames) {
-    var r = {};
+  "double":function (methodNames, optName) {
+    var r = {
+      toString:function () {
+        return '[double ' + optName ? optName : '<anonymous>' + ']'
+      }
+    };
     methodNames.forEach(function (methodName) {
       r[methodName] = sinon.stub();
     });

@@ -2,22 +2,22 @@
 
 var expect = require('expect.js'),
     doubles = require('./doubles'),
-    utils = require('../lib/internal/utils'),
+    busModule = require('../lib/internal/bus'),
     chi = require('../lib/chi');
 
 describe('A List:', function () {
   var list, bus;
 
   beforeEach(function () {
-    doubles.stubUtilsModule(utils);
+    doubles.stubBusModule(busModule);
     bus = doubles.makeBus();
-    utils.EventBus.returns(bus);
+    busModule.EventBus.returns(bus);
 
     list = chi.list();
   });
 
   afterEach(function () {
-    utils.restoreOriginal();
+    busModule.restoreOriginal();
   });
 
   describe('can be chained:', function () {
@@ -86,7 +86,7 @@ describe('A List:', function () {
       }).to.throwError();
     });
 
-    it('chain() will throw if utils.isFeed() returns false', function () {
+    it('chain() will throw if a non feed object is passed', function () {
       expect(function () {
         list.chain("some object");
       }).to.throwError();

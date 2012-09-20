@@ -2,27 +2,27 @@
 
 var expect = require('expect.js'),
     doubles = require('./doubles'),
-    utils = require('../lib/internal/utils'),
+    busModule = require('../lib/internal/bus'),
     chi = require('../lib/chi');
 
 describe('An Emitter:', function () {
-  var anEmitter, aBus;
+  var emitter, bus;
 
   beforeEach(function () {
-    doubles.stubUtilsModule(utils);
-    aBus = doubles.makeBus();
-    utils.EventBus.returns(aBus);
+    doubles.stubBusModule(busModule);
+    bus = doubles.makeBus();
+    busModule.EventBus.returns(bus);
 
-    anEmitter = chi.emitter();
+    emitter = chi.emitter();
   });
 
   afterEach(function () {
-    utils.restoreOriginal();
+    busModule.restoreOriginal();
   });
 
   describe('can be chained:', function () {
     it('it has a chain() method', function () {
-      expect(anEmitter.chain).to.be.a('function');
+      expect(emitter.chain).to.be.a('function');
     });
 
     describe('when chain is invoked with another feed,', function () {
@@ -30,13 +30,13 @@ describe('An Emitter:', function () {
       beforeEach(function () {
         aFeed = doubles.makeFeed();
 
-        chainResult = anEmitter.chain(aFeed);
+        chainResult = emitter.chain(aFeed);
       });
 
       it('will subscribe the feed to the bus', function () {
-        expect(aBus.subscribe.calledOnce).to.be.ok();
-        expect(aBus.subscribe.calledOn(aBus)).to.be.ok();
-        expect(aBus.subscribe.calledWithExactly(aFeed)).to.be.ok();
+        expect(bus.subscribe.calledOnce).to.be.ok();
+        expect(bus.subscribe.calledOn(bus)).to.be.ok();
+        expect(bus.subscribe.calledWithExactly(aFeed)).to.be.ok();
       });
 
       it('it will return a non null object', function () {
@@ -79,16 +79,16 @@ describe('An Emitter:', function () {
     });
 
     it('chain() will throw if bus.subscribe() throws', function () {
-      aBus.subscribe.throws();
+      bus.subscribe.throws();
 
       expect(function () {
-        anEmitter.chain("some object");
+        emitter.chain("some object");
       }).to.throwError();
     });
 
-    it('chain() will throw if utils.isFeed() returns false', function () {
+    it('chain() will throw if a non feed object is passed', function () {
       expect(function () {
-        anEmitter.chain("some object");
+        emitter.chain("some object");
       }).to.throwError();
     });
   });
@@ -97,24 +97,24 @@ describe('An Emitter:', function () {
     var value = "yielded value";
 
     it('it has a yield() method', function () {
-      expect(anEmitter.yield).to.be.a('function');
+      expect(emitter.yield).to.be.a('function');
     });
 
     describe('when yield is invoked with a value, it', function () {
       var result;
 
       beforeEach(function () {
-        result = anEmitter.yield(value);
+        result = emitter.yield(value);
       });
 
       it('will return itself', function () {
-        expect(result).to.be(anEmitter);
+        expect(result).to.be(emitter);
       });
 
       it('will fire exactly once the "yield" event on the bus with the yielded value', function () {
-        expect(aBus.fire.calledOnce).to.be.ok();
-        expect(aBus.fire.calledOn(aBus)).to.be.ok();
-        expect(aBus.fire.calledWithExactly('yield', value)).to.be.ok();
+        expect(bus.fire.calledOnce).to.be.ok();
+        expect(bus.fire.calledOn(bus)).to.be.ok();
+        expect(bus.fire.calledWithExactly('yield', value)).to.be.ok();
       });
     });
   });
@@ -123,48 +123,48 @@ describe('An Emitter:', function () {
     var error = "throwed error";
 
     it('it has a throw() method', function () {
-      expect(anEmitter.throw).to.be.a('function');
+      expect(emitter.throw).to.be.a('function');
     });
 
     describe('when throw is invoked with a value, it', function () {
       var result;
 
       beforeEach(function () {
-        result = anEmitter.throw(error);
+        result = emitter.throw(error);
       });
 
       it('will return itself', function () {
-        expect(result).to.be(anEmitter);
+        expect(result).to.be(emitter);
       });
 
       it('publish exactly once the "throw" event on the bus with the throwed error', function () {
-        expect(aBus.publish.calledOnce).to.be.ok();
-        expect(aBus.publish.calledOn(aBus)).to.be.ok();
-        expect(aBus.publish.calledWithExactly('throw', error)).to.be.ok();
+        expect(bus.publish.calledOnce).to.be.ok();
+        expect(bus.publish.calledOn(bus)).to.be.ok();
+        expect(bus.publish.calledWithExactly('throw', error)).to.be.ok();
       });
     });
   });
 
   describe('can be marked as done:', function () {
     it('it has a done() method', function () {
-      expect(anEmitter.done).to.be.a('function');
+      expect(emitter.done).to.be.a('function');
     });
 
     describe('when done is invoked, it', function () {
       var result;
 
       beforeEach(function () {
-        result = anEmitter.done();
+        result = emitter.done();
       });
 
       it('will return itself', function () {
-        expect(result).to.be(anEmitter);
+        expect(result).to.be(emitter);
       });
 
       it('publish exactly once the "done" event on the bus', function () {
-        expect(aBus.publish.calledOnce).to.be.ok();
-        expect(aBus.publish.calledOn(aBus)).to.be.ok();
-        expect(aBus.publish.calledWithExactly('done')).to.be.ok();
+        expect(bus.publish.calledOnce).to.be.ok();
+        expect(bus.publish.calledOn(bus)).to.be.ok();
+        expect(bus.publish.calledWithExactly('done')).to.be.ok();
       });
     });
   });
@@ -173,26 +173,26 @@ describe('An Emitter:', function () {
     function completedEmitterCannotDo(event) {
       it('a call to "' + event + '" will throw and will not send any event', function () {
         expect(function () {
-          anEmitter[event]('not important');
+          emitter[event]('not important');
         }).to.throwError();
         if (event === 'yield')
-          expect(aBus.fire.called).not.to.be.ok();
+          expect(bus.fire.called).not.to.be.ok();
         else
-          expect(aBus.publish.calledOnce).to.be.ok();
+          expect(bus.publish.calledOnce).to.be.ok();
       });
     }
 
     describe('given it has been marked as done,', function () {
       beforeEach(function () {
-        anEmitter.done();
+        emitter.done();
       });
 
       ['yield', 'throw'].forEach(completedEmitterCannotDo);
 
       it('calling to done again will be ok, but no event will be sent', function () {
-        anEmitter.done();
+        emitter.done();
 
-        expect(aBus.publish.calledOnce).to.be.ok();
+        expect(bus.publish.calledOnce).to.be.ok();
       });
     });
 
@@ -200,15 +200,15 @@ describe('An Emitter:', function () {
       var error;
       beforeEach(function () {
         error = 'some error';
-        anEmitter.throw(error);
+        emitter.throw(error);
       });
 
       ['yield', 'throw', 'done'].forEach(completedEmitterCannotDo);
 
       it('calling throw again with the same error will be ok, but no event will be sent', function () {
-        anEmitter.throw(error);
+        emitter.throw(error);
 
-        expect(aBus.publish.calledOnce).to.be.ok();
+        expect(bus.publish.calledOnce).to.be.ok();
       });
     });
   })

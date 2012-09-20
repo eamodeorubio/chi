@@ -9,12 +9,12 @@ module.exports = {
   makeBus:function () {
     return this.double(['subscribe', 'fire', 'publish']);
   },
-  stubUtilsModule:function (utils) {
+  stubBusModule:function (utils) {
     sinon.stub(utils, "EventBus");
     utils.restoreOriginal = function () {
       utils.EventBus.restore();
       delete utils.restoreOriginal;
-    }
+    };
   },
   "double":function (methodNames) {
     var r = {};

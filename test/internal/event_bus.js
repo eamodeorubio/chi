@@ -2,13 +2,13 @@
 
 var expect = require('expect.js'),
     doubles = require('../doubles'),
-    utils = require('../../lib/internal/utils');
+    busModule = require('../../lib/internal/bus');
 
 describe('An EventBus:', function () {
   var bus;
 
   beforeEach(function () {
-    bus = new utils.EventBus();
+    bus = new busModule.EventBus();
   });
 
   it('it has a subscribe() method', function () {

@@ -1,7 +1,7 @@
 "use strict";
 
 var expect = require('expect.js'),
-    doubles = require('./doubles'),
+    doubles = require('./helpers/doubles'),
     busModule = require('../lib/internal/bus'),
     feeds = require('../lib/internal/feeds'),
     chi = require('../lib/chi');

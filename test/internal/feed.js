@@ -1,7 +1,7 @@
 "use strict";
 
 var expect = require('expect.js'),
-    doubles = require('../doubles'),
+    doubles = require('../helpers/doubles'),
     feeds = require('../../lib/internal/feeds');
 
 describe('Given a Feed created with a bus and an initial state,', function () {

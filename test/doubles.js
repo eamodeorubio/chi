@@ -22,6 +22,9 @@ module.exports = {
       delete utils.restoreOriginal;
     };
   },
+  stubFunction:function () {
+    return sinon.stub();
+  },
   "double":function (methodNames, optName) {
     var r = {
       toString:function () {

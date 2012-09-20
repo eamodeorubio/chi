@@ -5,13 +5,14 @@ var expect = require('expect.js'),
     feeds = require('../../lib/internal/feeds');
 
 describe('Given a Feed created with a bus and an initial state,', function () {
-  var feed, bus, initialState;
+  var feed, bus, initialState, isFeed;
 
   beforeEach(function () {
     bus = doubles.makeBus();
     initialState = doubles.makeFeedState();
+    isFeed = doubles.stubFunction();
 
-    feed = feeds.feed(bus, initialState);
+    feed = feeds.feed(bus, initialState, isFeed);
   });
 
   describe('it can be chained:', function () {
@@ -19,9 +20,18 @@ describe('Given a Feed created with a bus and an initial state,', function () {
       expect(feed.chain).to.be.a('function');
     });
 
+    it('chain() will throw if is feed returns false:', function () {
+      isFeed.returns(false);
+
+      expect(function () {
+        list.chain(doubles.makeFeed());
+      }).to.throwError();
+    });
+
     describe('when chain is invoked with another feed,', function () {
       var anotherFeed, chainResult;
       beforeEach(function () {
+        isFeed.returns(true);
         anotherFeed = doubles.makeFeed();
 
         chainResult = feed.chain(anotherFeed);
@@ -77,31 +87,12 @@ describe('Given a Feed created with a bus and an initial state,', function () {
     });
 
     it('chain() will throw if bus.subscribe() throws', function () {
+      isFeed.returns(true);
       bus.subscribe.throws();
 
       expect(function () {
         list.chain("some object");
       }).to.throwError();
-    });
-
-    describe('chain() will throw if a non feed object is passed:', function () {
-      it('a undefined is not a feed', function () {
-        expect(function () {
-          list.chain();
-        }).to.throwError();
-      });
-      it('a string is not a feed', function () {
-        expect(function () {
-          list.chain("some object");
-        }).to.throwError();
-      });
-      it('an object without all the feeds methods is not a feed', function () {
-        expect(function () {
-          list.chain({chain:function () {
-          }, done:function () {
-          }});
-        }).to.throwError();
-      });
     });
   });
 

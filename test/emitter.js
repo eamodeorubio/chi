@@ -6,7 +6,7 @@ var expect = require('expect.js'),
     chi = require('../lib/chi');
 
 describe('An Emitter:', function () {
-  var anEmitter, originalEventBus, aBus, originalIsFeed;
+  var anEmitter, aBus;
 
   beforeEach(function () {
     doubles.stubUtilsModule(utils);
@@ -28,7 +28,6 @@ describe('An Emitter:', function () {
     describe('when chain is invoked with another feed,', function () {
       var aFeed, chainResult;
       beforeEach(function () {
-        utils.isFeed.returns(true);
         aFeed = doubles.makeFeed();
 
         chainResult = anEmitter.chain(aFeed);
@@ -80,7 +79,6 @@ describe('An Emitter:', function () {
     });
 
     it('chain() will throw if bus.subscribe() throws', function () {
-      utils.isFeed.returns(true);
       aBus.subscribe.throws();
 
       expect(function () {
@@ -89,8 +87,6 @@ describe('An Emitter:', function () {
     });
 
     it('chain() will throw if utils.isFeed() returns false', function () {
-      utils.isFeed.returns(false);
-
       expect(function () {
         anEmitter.chain("some object");
       }).to.throwError();

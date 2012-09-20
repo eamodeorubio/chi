@@ -2,11 +2,11 @@
 
 var expect = require('expect.js'),
     doubles = require('../doubles'),
-    utils = require('../../lib/internal/utils');
+    feeds = require('../../lib/internal/feeds');
 
 describe('isFeed():', function () {
   it('a null is not a feed', function () {
-    expect(utils.isFeed(null)).not.to.be.ok();
+    expect(feeds.isFeed(null)).not.to.be.ok();
   });
 
   function objectWithoutThisMethodIsNotAFeed(methodName) {
@@ -14,13 +14,13 @@ describe('isFeed():', function () {
       var almostAFeed = doubles.makeFeed();
       delete almostAFeed[methodName];
 
-      expect(utils.isFeed(almostAFeed)).not.to.be.ok();
+      expect(feeds.isFeed(almostAFeed)).not.to.be.ok();
     });
   }
 
   ['yield', 'throw', 'done', 'chain'].forEach(objectWithoutThisMethodIsNotAFeed);
 
   it('an object with "yield", "throw", "done" and "chain" method is a feed', function () {
-    expect(utils.isFeed(doubles.makeFeed())).to.be.ok();
+    expect(feeds.isFeed(doubles.makeFeed())).to.be.ok();
   });
 });

@@ -28,7 +28,6 @@ describe('A List:', function () {
     describe('when chain is invoked with another feed,', function () {
       var aFeed, chainResult;
       beforeEach(function () {
-        utils.isFeed.returns(true);
         aFeed = doubles.makeFeed();
 
         chainResult = list.chain(aFeed);
@@ -80,7 +79,6 @@ describe('A List:', function () {
     });
 
     it('chain() will throw if bus.subscribe() throws', function () {
-      utils.isFeed.returns(true);
       bus.subscribe.throws();
 
       expect(function () {
@@ -89,8 +87,6 @@ describe('A List:', function () {
     });
 
     it('chain() will throw if utils.isFeed() returns false', function () {
-      utils.isFeed.returns(false);
-
       expect(function () {
         list.chain("some object");
       }).to.throwError();

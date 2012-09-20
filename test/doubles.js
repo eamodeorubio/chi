@@ -10,10 +10,8 @@ module.exports = {
     return this.double(['subscribe', 'fire', 'publish']);
   },
   stubUtilsModule:function (utils) {
-    sinon.stub(utils, "isFeed");
     sinon.stub(utils, "EventBus");
     utils.restoreOriginal = function () {
-      utils.isFeed.restore();
       utils.EventBus.restore();
       delete utils.restoreOriginal;
     }

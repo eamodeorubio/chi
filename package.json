@@ -18,10 +18,12 @@
     "node":">=0.8.0"
   },
   "scripts":{
-    "test":"./node_modules/mocha/bin/mocha --reporter tap",
-    "watch":"./node_modules/mocha/bin/mocha --reporter spec --growl --watch"
+    "test":"./node_modules/grunt/bin/grunt",
+    "watch":"./node_modules/grunt/bin/grunt watch"
   },
   "devDependencies":{
+    "grunt":"0.3.x",
+    "grunt-simple-mocha":"0.1.x",
     "expect.js":"0.1.x",
     "sinon":"1.4.x",
     "mocha":"1.4.x"

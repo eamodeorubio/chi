@@ -22,7 +22,7 @@ describe('Given a SuccessState,', function () {
     });
   }
 
-  ['yield', 'throw'].forEach(cannotDoAnymore);
+  ['yields', 'throws'].forEach(cannotDoAnymore);
 
   describe('can be marked as done:', function () {
     it('it has a done() method', function () {

@@ -56,7 +56,9 @@ module.exports = function (grunt) {
       tests:{
         globals:{
           describe:true,
-          it:true
+          it:true,
+          beforeEach:true,
+          afterEach:true
         }
       }
     }

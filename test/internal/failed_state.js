@@ -23,9 +23,9 @@ describe('Given a FailedState with an error,', function () {
     });
   }
 
-  ['yield', 'throw', 'done'].forEach(cannotDoAnymore);
+  ['yields', 'throws', 'done'].forEach(cannotDoAnymore);
 
   it('when throw is invoked with the same error, it only will return itself', function () {
-    expect(state.throw(error)).to.be(state);
+    expect(state.throws(error)).to.be(state);
   });
 });

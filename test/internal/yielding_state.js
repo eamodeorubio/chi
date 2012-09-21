@@ -20,7 +20,7 @@ describe('Given a YieldingState', function () {
 
       describe('can yield data:', function () {
         it('it has a yield() method', function () {
-          expect(state.yield).to.be.a('function');
+          expect(state.yields).to.be.a('function');
         });
 
         describe('when yield is invoked with some data, it', function () {
@@ -29,7 +29,7 @@ describe('Given a YieldingState', function () {
           beforeEach(function () {
             data = "some data";
 
-            result = state.yield(data);
+            result = state.yields(data);
           });
 
           it('will return the state itself', function () {
@@ -56,7 +56,7 @@ describe('Given a YieldingState', function () {
 
     describe('can throw errors:', function () {
       it('it has a throw() method', function () {
-        expect(state.throw).to.be.a('function');
+        expect(state.throws).to.be.a('function');
       });
 
       describe('when throw is invoked with an error, it', function () {
@@ -67,7 +67,7 @@ describe('Given a YieldingState', function () {
           failedState = doubles.makeFeedState();
           stateFactory.failedState.withArgs(error).returns(failedState);
 
-          result = state.throw(error);
+          result = state.throws(error);
         });
 
         it('will return a FailedState with the thrown error', function () {

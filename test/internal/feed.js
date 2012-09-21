@@ -24,7 +24,7 @@ describe('Given a Feed created with a bus and an initial state,', function () {
       isFeed.returns(false);
 
       expect(function () {
-        list.chain(doubles.makeFeed());
+        feed.chain(doubles.makeFeed());
       }).to.throwError();
     });
 
@@ -91,7 +91,7 @@ describe('Given a Feed created with a bus and an initial state,', function () {
       bus.subscribe.throws();
 
       expect(function () {
-        list.chain("some object");
+        feed.chain("some object");
       }).to.throwError();
     });
   });
@@ -138,5 +138,5 @@ describe('Given a Feed created with a bus and an initial state,', function () {
     });
   }
 
-  ['yield', 'throw', 'done'].forEach(knowsHowToProcessEvent);
+  ['yields', 'throws', 'done'].forEach(knowsHowToProcessEvent);
 });

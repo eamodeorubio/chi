@@ -4,10 +4,10 @@ var sinon = require('sinon');
 
 module.exports = {
   makeFeed:function (optName) {
-    return this.double(['yield', 'throw', 'done', 'chain'], optName ? optName : "<anonymous feed>");
+    return this.double(['yields', 'throws', 'done', 'chain'], optName ? optName : "<anonymous feed>");
   },
   makeFeedState:function (optName) {
-    return this.double(['yield', 'throw', 'done'], optName ? optName : "<anonymous feed state>");
+    return this.double(['yields', 'throws', 'done'], optName ? optName : "<anonymous feed state>");
   },
   makeFeedStateFactory:function (optName) {
     return this.double(['yieldingState', 'failedState', 'successState'], optName ? optName : "<anonymous state factory>");
@@ -38,7 +38,7 @@ module.exports = {
   "double":function (methodNames, optName) {
     var r = {
       toString:function () {
-        return '[double ' + optName ? optName : '<anonymous>' + ']'
+        return '[double ' + optName ? optName : '<anonymous>' + ']';
       }
     };
     methodNames.forEach(function (methodName) {

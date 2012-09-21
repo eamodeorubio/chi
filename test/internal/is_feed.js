@@ -18,7 +18,7 @@ describe('isFeed():', function () {
     });
   }
 
-  ['yield', 'throw', 'done', 'chain'].forEach(objectWithoutThisMethodIsNotAFeed);
+  ['yields', 'throws', 'done', 'chain'].forEach(objectWithoutThisMethodIsNotAFeed);
 
   it('an object with "yield", "throw", "done" and "chain" method is a feed', function () {
     expect(feeds.isFeed(doubles.makeFeed())).to.be.ok();

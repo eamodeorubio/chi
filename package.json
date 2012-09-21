@@ -15,16 +15,15 @@
     "url":"git://github.com/eamodeorubio/chi.git"
   },
   "engines":{
-    "node":"*",
-    "rhino":"*"
+    "node":">=0.8.0"
   },
   "scripts":{
     "test":"./node_modules/mocha/bin/mocha --reporter tap",
     "watch":"./node_modules/mocha/bin/mocha --reporter spec --growl --watch"
   },
   "devDependencies":{
-    "expect.js":"*",
-    "sinon":"*",
-    "mocha":"*"
+    "expect.js":"0.1.x",
+    "sinon":"1.4.x",
+    "mocha":"1.4.x"
   }
 }

@@ -54,13 +54,13 @@ describe("The module chi can be extended with plugins:", function () {
         expect(chi[name]()).to.be(expectedResult);
       });
 
-      it("it will use the new bus and the state returned by the plugin function to create the new feed", function () {
-        var expectedInitialState = 'initial state built by the plugin';
-        plugin.returns(expectedInitialState);
+      it("it will use the new bus and the state returned by the state factory to create the new feed", function () {
+        var expectedInitialState = 'initial state';
+        feeds.initialStateFor.returns(expectedInitialState);
 
         chi[name]();
 
-        expect(plugin.calledOnce).to.be.ok();
+        expect(feeds.initialStateFor.calledOnce).to.be.ok();
 
         expect(feeds.feed.calledOnce).to.be.ok();
         expect(feeds.feed.calledWithExactly(expectedBus, expectedInitialState)).to.be.ok();

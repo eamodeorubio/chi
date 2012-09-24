@@ -61,7 +61,7 @@ describe("The module chi can be extended with plugins:", function () {
         chi[name]();
 
         expect(plugin.calledOnce).to.be.ok();
-        
+
         expect(feeds.feed.calledOnce).to.be.ok();
         expect(feeds.feed.calledWithExactly(expectedBus, expectedInitialState)).to.be.ok();
       });

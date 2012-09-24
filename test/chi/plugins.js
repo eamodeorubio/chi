@@ -3,6 +3,7 @@
 var expect = require('expect.js'),
     doubles = require('./../helpers/doubles'),
     busModule = require('../../lib/internal/bus'),
+    feeds = require('../../lib/internal/feeds'),
     chi = require('../../lib/chi');
 
 describe("The module chi can be extended with plugins:", function () {
@@ -24,18 +25,22 @@ describe("The module chi can be extended with plugins:", function () {
     });
 
     describe("when the new factory method is called,", function () {
-      var expectedBus;
+      var expectedBus, expectedResult;
 
       beforeEach(function () {
         expectedBus = doubles.makeBus();
+        expectedResult = 'expected result';
 
         doubles.stubBusModule(busModule);
+        doubles.stubFeedsModule(feeds);
 
         busModule.EventBus.returns(expectedBus);
+        feeds.feed.returns(expectedResult);
       });
 
       afterEach(function () {
         busModule.restoreOriginal();
+        feeds.restoreOriginal();
       });
 
       it("it will create a new bus", function () {
@@ -43,6 +48,12 @@ describe("The module chi can be extended with plugins:", function () {
 
         expect(busModule.EventBus.calledOnce).to.be.ok();
         expect(busModule.EventBus.calledWithNew()).to.be.ok();
+      });
+
+      it("will return the feed built by the feeds module", function () {
+        var result = chi[name]();
+
+        expect(result).to.be(expectedResult);
       });
     });
   });

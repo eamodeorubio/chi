@@ -6,7 +6,7 @@ var expect = require('expect.js'),
     feeds = require('../../lib/internal/feeds'),
     chi = require('../../lib/chi');
 
-describe('The module chi:', function () {
+describe('The module chi has the following factories:', function () {
   var expectedResult, expectedBus, expectedInitialState;
 
   beforeEach(function () {

@@ -65,6 +65,12 @@ describe("The module chi can be extended with plugins:", function () {
         expect(feeds.feed.calledOnce).to.be.ok();
         expect(feeds.feed.calledWithExactly(expectedBus, expectedInitialState)).to.be.ok();
       });
+
+      it("without parameters, it will call the state factory with the new bus and 'fire' notification type", function () {
+        chi[name]();
+
+        expect(feeds.initialStateFor.calledWithExactly(expectedBus, 'fire')).to.be.ok();
+      });
     });
   });
 });

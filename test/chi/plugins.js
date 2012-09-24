@@ -50,10 +50,20 @@ describe("The module chi can be extended with plugins:", function () {
         expect(busModule.EventBus.calledWithNew()).to.be.ok();
       });
 
-      it("will return the feed built by the feeds module", function () {
-        var result = chi[name]();
+      it("it will return the feed built by the feeds module", function () {
+        expect(chi[name]()).to.be(expectedResult);
+      });
 
-        expect(result).to.be(expectedResult);
+      it("it will use the new bus and the state returned by the plugin function to create the new feed", function () {
+        var expectedInitialState = 'initial state built by the plugin';
+        plugin.returns(expectedInitialState);
+
+        chi[name]();
+
+        expect(plugin.calledOnce).to.be.ok();
+        
+        expect(feeds.feed.calledOnce).to.be.ok();
+        expect(feeds.feed.calledWithExactly(expectedBus, expectedInitialState)).to.be.ok();
       });
     });
   });

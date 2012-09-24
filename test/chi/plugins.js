@@ -17,7 +17,18 @@ describe("The module chi can be extended with plugins:", function () {
       name = "plugme";
       plugin = doubles.stubFunction();
 
+      doubles.stubFeedsModule(feeds);
+
       chi.registerPlugin(name, plugin);
+    });
+
+    afterEach(function () {
+      feeds.restoreOriginal();
+    });
+
+    it("will register the plugin in the feeds module", function () {
+      expect(feeds.registerPlugin.calledOnce).to.be.ok();
+      expect(feeds.registerPlugin.calledWithExactly(name, plugin)).to.be.ok();
     });
 
     it("then a factory method with the same name that the plugin will be available in chi", function () {
@@ -25,22 +36,18 @@ describe("The module chi can be extended with plugins:", function () {
     });
 
     describe("when the new factory method is called,", function () {
-      var expectedBus, expectedResult;
+      var expectedBus;
 
       beforeEach(function () {
         expectedBus = doubles.makeBus();
-        expectedResult = 'expected result';
 
         doubles.stubBusModule(busModule);
-        doubles.stubFeedsModule(feeds);
 
         busModule.EventBus.returns(expectedBus);
-        feeds.feed.returns(expectedResult);
       });
 
       afterEach(function () {
         busModule.restoreOriginal();
-        feeds.restoreOriginal();
       });
 
       it("it will create a new bus", function () {
@@ -51,6 +58,10 @@ describe("The module chi can be extended with plugins:", function () {
       });
 
       it("it will return the feed built by the feeds module", function () {
+        var expectedResult = 'expected result';
+
+        feeds.feed.returns(expectedResult);
+
         expect(chi[name]()).to.be(expectedResult);
       });
 

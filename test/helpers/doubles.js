@@ -19,7 +19,7 @@ module.exports = {
     this.stubModule(busModule, ['EventBus']);
   },
   stubFeedsModule:function (feeds) {
-    this.stubModule(feeds, ['feed', 'yieldingState', 'failedState', 'isFeed', 'successState', 'initialStateFor']);
+    this.stubModule(feeds, ['feed', 'yieldingState', 'failedState', 'isFeed', 'successState', 'initialStateFor', 'registerPlugin']);
   },
   stubFunction:function () {
     return sinon.stub();

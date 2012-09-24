@@ -83,16 +83,22 @@ describe("The module chi can be extended with plugins:", function () {
         expect(feeds.initialStateFor.calledWithExactly(name, expectedBus, 'fire')).to.be.ok();
       });
 
-      it("with a falsy parameter, it will call the state factory with the new bus and 'fire' notification type", function () {
+      it("with false as a parameter, it will call the state factory with the new bus and 'fire' notification type", function () {
         chi[name](false);
 
         expect(feeds.initialStateFor.calledWithExactly(name, expectedBus, 'fire')).to.be.ok();
       });
 
-      it("with a truthy parameter, it will call the state factory with the new bus and 'publish' notification type", function () {
+      it("with true as a parameter, it will call the state factory with the new bus and 'publish' notification type", function () {
         chi[name](true);
 
         expect(feeds.initialStateFor.calledWithExactly(name, expectedBus, 'publish')).to.be.ok();
+      });
+
+      it("with extra parameters, it will pass them to the state factory in an array", function () {
+        chi[name](true, '', 0);
+
+        expect(feeds.initialStateFor.calledWithExactly(name, expectedBus, 'publish', ['', 0])).to.be.ok();
       });
     });
   });

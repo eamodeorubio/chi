@@ -29,19 +29,25 @@ describe('The module internal/feeds can be extended with plugins:', function () 
     });
 
     describe("initialStateFor will", function () {
-      var bus, notificationType, args;
+      var bus, notificationType, options;
       beforeEach(function () {
         bus = doubles.makeBus();
         notificationType = 'xxx';
-        args = ["a", "b", "c"];
+        options = ["a", "b", "c"];
 
-        feeds.registerPlugin(name, plugin);
+        feeds.initialStateFor(name, bus, notificationType, options);
       });
 
       it("call the plugin only once", function () {
-        feeds.initialStateFor(name, bus, notificationType, args);
-
         expect(plugin.calledOnce).to.be.ok();
+      });
+
+      it("will call the plugin with 3 arguments: an non null object, a function and the plugin options", function () {
+        expect(plugin.lastCall.args.length).to.be(3);
+        expect(plugin.lastCall.args[0]).to.be.an('object');
+        expect(plugin.lastCall.args[0]).not.to.be(null);
+        expect(plugin.lastCall.args[1]).to.be.a('function');
+        expect(plugin.lastCall.args[2]).to.be(options);
       });
     });
   });

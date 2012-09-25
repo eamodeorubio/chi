@@ -19,7 +19,7 @@ describe('The module internal/feeds can be extended with plugins:', function () 
     expect(feeds.plugins[name]).to.be(plugin);
   });
 
-  describe("given a plugin has been registered:", function () {
+  describe("given a plugin has been registered,", function () {
     var name, plugin;
     beforeEach(function () {
       name = 'some plugin';
@@ -29,25 +29,32 @@ describe('The module internal/feeds can be extended with plugins:', function () 
     });
 
     describe("initialStateFor will", function () {
-      var bus, notificationType, options;
+      var bus, notificationType, options, result, expectedResult;
       beforeEach(function () {
         bus = doubles.makeBus();
         notificationType = 'xxx';
         options = ["a", "b", "c"];
+        expectedResult="plugin result";
 
-        feeds.initialStateFor(name, bus, notificationType, options);
+        plugin.returns(expectedResult);
+
+        result=feeds.initialStateFor(name, bus, notificationType, options);
       });
 
       it("call the plugin only once", function () {
         expect(plugin.calledOnce).to.be.ok();
       });
 
-      it("will call the plugin with 3 arguments: an non null object, a function and the plugin options", function () {
+      it("call the plugin with 3 arguments: an non null object, a function and the plugin options", function () {
         expect(plugin.lastCall.args.length).to.be(3);
         expect(plugin.lastCall.args[0]).to.be.an('object');
         expect(plugin.lastCall.args[0]).not.to.be(null);
         expect(plugin.lastCall.args[1]).to.be.a('function');
         expect(plugin.lastCall.args[2]).to.be(options);
+      });
+
+      it("return the plugin result", function () {
+        expect(result).to.be(expectedResult);
       });
     });
   });

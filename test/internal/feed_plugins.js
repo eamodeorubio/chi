@@ -30,7 +30,7 @@ describe('The module internal/feeds can be extended with plugins:', function () 
     });
 
     describe("initialStateFor will", function () {
-      var bus, notificationType, options, result, expectedResult, state;
+      var bus, notificationType, options, result, expectedResult, state, stateFactory;
       beforeEach(function () {
         bus = doubles.makeBus();
         notificationType = 'xxx';
@@ -40,6 +40,10 @@ describe('The module internal/feeds can be extended with plugins:', function () 
         sinon.stub(feeds, "yieldingState");
         feeds.yieldingState.returns(state);
 
+        stateFactory = doubles.stubFunction();
+        sinon.stub(feeds, "stateFactoryWith");
+        feeds.stateFactoryWith.returns(stateFactory);
+
         expectedResult = "plugin result";
         plugin.returns(expectedResult);
 
@@ -48,6 +52,7 @@ describe('The module internal/feeds can be extended with plugins:', function () 
 
       afterEach(function () {
         feeds.yieldingState.restore();
+        feeds.stateFactoryWith.restore();
       });
 
       it("call the plugin only once", function () {
@@ -64,8 +69,10 @@ describe('The module internal/feeds can be extended with plugins:', function () 
         expect(plugin.lastCall.args[0]).to.be(state);
       });
 
-      it("call the plugin with a function as 2nd argument", function () {
-        expect(plugin.lastCall.args[1]).to.be.a('function');
+      it("call the plugin with a 2nd argument that is a state factory configured with the bus and notification type", function () {
+        expect(feeds.stateFactoryWith.calledOnce).to.be.ok();
+        expect(feeds.stateFactoryWith.calledWithExactly(bus, notificationType)).to.be.ok();
+        expect(plugin.lastCall.args[1]).to.be(stateFactory);
       });
 
       it("call the plugin with the options as 3rd argument", function () {

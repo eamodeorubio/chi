@@ -36,23 +36,40 @@ describe('The module internal/feeds can be extended with plugins:', function () 
     });
 
     describe("given stateFactoryWith has been called, the returned factory will", function () {
-      var factory, outputState, expectedResult, result;
+      var factory, outputState, expectedResult, result, options;
 
       beforeEach(function () {
+        options = ['x', 'y', 'z'];
         outputState = doubles.makeFeedState();
         expectedResult = doubles.makeFeedState();
         plugin.returns(expectedResult);
 
         factory = feeds.stateFactoryWith(outputState);
-        result = factory(name);
+        result = factory(name, options);
       });
 
-      it("will call the specified plugin once", function () {
+      it("call the specified plugin once", function () {
         expect(plugin.calledOnce).to.be.ok();
       });
 
-      it("will return the result of the plugin", function () {
+      it("return the result of the plugin", function () {
         expect(result).to.be(expectedResult);
+      });
+
+      it("call the plugin with 3 arguments", function () {
+        expect(plugin.lastCall.args.length).to.be(3);
+      });
+
+      it("call the plugin with the output state as first argument", function () {
+        expect(plugin.lastCall.args[0]).to.be(outputState);
+      });
+
+      it("call the plugin with the state factory itself 2nd argument that is the same state", function () {
+        expect(plugin.lastCall.args[1]).to.be(factory);
+      });
+
+      it("call the plugin with the options as 3rd argument", function () {
+        expect(plugin.lastCall.args[2]).to.be(options);
       });
     });
 

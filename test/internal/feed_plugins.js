@@ -15,7 +15,7 @@ describe('The module internal/feeds can be extended with plugins:', function () 
     feeds.registerPlugin(name, plugin);
 
     expect(feeds.plugins).to.be.an('object');
-    expect(feeds.plugins).no.to.be(null);
+    expect(feeds.plugins).not.to.be(null);
     expect(feeds.plugins[name]).to.be(plugin);
   });
 });

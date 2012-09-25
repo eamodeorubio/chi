@@ -35,6 +35,22 @@ describe('The module internal/feeds can be extended with plugins:', function () 
       expect(feeds.stateFactoryWith(outputState)).to.be.a('function');
     });
 
+    describe("given stateFactoryWith has been called, the returned factory will", function () {
+      var factory, outputState;
+
+      beforeEach(function () {
+        outputState = doubles.makeFeedState();
+
+        factory = feeds.stateFactoryWith(outputState);
+      });
+
+      it("will call the specified plugin once", function () {
+        factory(name);
+
+        expect(plugin.calledOnce).to.be.ok();
+      });
+    });
+
     describe("initialStateFor() will", function () {
       var bus, notificationType, options, result, expectedResult, outputState, stateFactory;
       beforeEach(function () {

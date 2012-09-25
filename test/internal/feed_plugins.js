@@ -63,15 +63,15 @@ describe('The module internal/feeds can be extended with plugins:', function () 
         expect(plugin.lastCall.args.length).to.be(3);
       });
 
-      it("call the plugin with a yielding state as first argument", function () {
+      it("call the plugin with an yielding state as first argument", function () {
         expect(feeds.yieldingState.calledOnce).to.be.ok();
         expect(feeds.yieldingState.calledWithExactly(bus, notificationType, feeds)).to.be.ok();
         expect(plugin.lastCall.args[0]).to.be(state);
       });
 
-      it("call the plugin with a 2nd argument that is a state factory configured with the bus and notification type", function () {
+      it("call the plugin with a 2nd argument that is a state factory configured with the output state", function () {
         expect(feeds.stateFactoryWith.calledOnce).to.be.ok();
-        expect(feeds.stateFactoryWith.calledWithExactly(bus, notificationType)).to.be.ok();
+        expect(feeds.stateFactoryWith.calledWithExactly(state)).to.be.ok();
         expect(plugin.lastCall.args[1]).to.be(stateFactory);
       });
 

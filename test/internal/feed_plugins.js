@@ -36,15 +36,15 @@ describe('The module internal/feeds can be extended with plugins:', function () 
     });
 
     describe("given stateFactoryWith has been called, the returned factory will", function () {
-      var factory, outputState, expectedResult, result, options;
+      var factory, output, expectedResult, result, options;
 
       beforeEach(function () {
         options = ['x', 'y', 'z'];
-        outputState = doubles.makeFeedState();
-        expectedResult = doubles.makeFeedState();
+        output = {};
+        expectedResult = {};
         plugin.returns(expectedResult);
 
-        factory = feeds.stateFactoryWith(outputState);
+        factory = feeds.stateFactoryWith(output);
         result = factory(name, options);
       });
 
@@ -61,7 +61,7 @@ describe('The module internal/feeds can be extended with plugins:', function () 
       });
 
       it("call the plugin with the output state as first argument", function () {
-        expect(plugin.lastCall.args[0]).to.be(outputState);
+        expect(plugin.lastCall.args[0]).to.be(output);
       });
 
       it("call the plugin with the state factory itself 2nd argument that is the same state", function () {
@@ -74,15 +74,15 @@ describe('The module internal/feeds can be extended with plugins:', function () 
     });
 
     describe("initialStateFor() will", function () {
-      var bus, notificationType, options, result, expectedResult, outputState, stateFactory;
+      var bus, notificationType, options, result, expectedResult, output, stateFactory;
       beforeEach(function () {
-        bus = doubles.makeBus();
+        bus = {};
         notificationType = 'xxx';
         options = ["a", "b", "c"];
 
-        outputState = doubles.makeFeedState();
+        output = {};
         sinon.stub(feeds, "yieldingState");
-        feeds.yieldingState.returns(outputState);
+        feeds.yieldingState.returns(output);
 
         stateFactory = doubles.stubFunction();
         sinon.stub(feeds, "stateFactoryWith");
@@ -107,15 +107,15 @@ describe('The module internal/feeds can be extended with plugins:', function () 
         expect(plugin.lastCall.args.length).to.be(3);
       });
 
-      it("call the plugin with an yielding state as first argument", function () {
+      it("call the plugin with a yielding state as first argument (output)", function () {
         expect(feeds.yieldingState.calledOnce).to.be.ok();
         expect(feeds.yieldingState.calledWithExactly(bus, notificationType, feeds)).to.be.ok();
-        expect(plugin.lastCall.args[0]).to.be(outputState);
+        expect(plugin.lastCall.args[0]).to.be(output);
       });
 
-      it("call the plugin with a 2nd argument that is a state factory configured with the output state", function () {
+      it("call the plugin with a 2nd argument that is a state factory configured with the output", function () {
         expect(feeds.stateFactoryWith.calledOnce).to.be.ok();
-        expect(feeds.stateFactoryWith.calledWithExactly(outputState)).to.be.ok();
+        expect(feeds.stateFactoryWith.calledWithExactly(output)).to.be.ok();
         expect(plugin.lastCall.args[1]).to.be(stateFactory);
       });
 

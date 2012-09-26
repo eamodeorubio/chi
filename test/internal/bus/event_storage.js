@@ -1,8 +1,8 @@
 "use strict";
 
 var expect = require('expect.js'),
-    doubles = require('../helpers/doubles'),
-    busModule = require('../../lib/internal/bus');
+    doubles = require('../../helpers/doubles'),
+    busModule = require('../../../lib/internal/bus');
 
 describe('An EventStorage,', function () {
   var storage, emitter;

@@ -1,8 +1,8 @@
 "use strict";
 
 var expect = require('expect.js'),
-    doubles = require('../helpers/doubles'),
-    feeds = require('../../lib/internal/feeds');
+    doubles = require('../../helpers/doubles'),
+    feeds = require('../../../lib/internal/feeds');
 
 describe('A YieldingState', function () {
   var bus, stateFactory, state;

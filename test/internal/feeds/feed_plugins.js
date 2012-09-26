@@ -1,9 +1,9 @@
 "use strict";
 
 var expect = require('expect.js'),
-    doubles = require('../helpers/doubles'),
+    doubles = require('../../helpers/doubles'),
     sinon = require('sinon'),
-    feeds = require('../../lib/internal/feeds');
+    feeds = require('../../../lib/internal/feeds');
 
 describe('The module internal/feeds can be extended with plugins:', function () {
   it("has a registerPlugin function", function () {

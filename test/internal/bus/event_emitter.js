@@ -5,17 +5,19 @@ var expect = require('expect.js'),
     busModule = require('../../../lib/internal/bus');
 
 describe('An event emitter,', function () {
-  var emitter;
+  var emitter, publicationFactory;
 
   beforeEach(function () {
-    emitter = new busModule.emitter();
+    publicationFactory = doubles.stubFunction();
+
+    emitter = new busModule.emitter(publicationFactory);
   });
 
   it('it has a subscribe() method', function () {
     expect(emitter.subscribe).to.be.a('function');
   });
 
-  it('subscribe() will return if the subscriber has been subscribed before', function () {
+  it('subscribe() will return truthy if the subscriber has been subscribed before', function () {
     var subscriber = {};
 
     expect(emitter.subscribe(subscriber)).not.to.be.ok();
@@ -28,112 +30,87 @@ describe('An event emitter,', function () {
   });
 
   describe("publish():", function () {
-    var event, data, publication;
+    var event, data, result, publication;
     beforeEach(function () {
       event = 'x';
       data = 'args';
+      publication = doubles.stubFunction();
 
-      publication = emitter.publish(event, data);
+      publicationFactory.returns(publication);
+
+      result = emitter.publish(event, data);
     });
 
-    it('will return a publication function', function () {
-      expect(publication).to.be.a('function');
+    it('call the the publication factory with the same parameters', function () {
+      expect(publicationFactory.calledOnce).to.be.ok();
+      expect(publicationFactory.calledWithExactly(event, data)).to.be.ok();
     });
 
-    it("the publication function will notify the event with the data to the listener passed as argument", function () {
-      var listener = doubles.double(['x', 'y']);
-
-      publication(listener);
-
-      expect(listener.x.calledOnce).to.be.ok();
-      expect(listener.x.calledOn(listener)).to.be.ok();
-      expect(listener.x.calledWithExactly(data)).to.be.ok();
-      expect(listener.y.called).not.to.be.ok();
-    });
-
-    it("the publication function won't fail if the listener cannot receive the event", function () {
-      expect(function () {
-        publication(doubles.double(['z']));
-      }).not.to.throwError();
+    it('return the publication created by the publication factory', function () {
+      expect(result).to.be(publication);
     });
   });
 
-  function knowsHowToPublishEvents() {
-    return function (event) {
-      describe('it knows how to publish events of type "' + event + '":', function () {
-        describe('given several objects has been subscribed to it', function () {
-          var subscriber1, subscriber2, data;
+  describe('will notify each publication to its subscribers once:', function () {
+    describe('given several objects has been subscribed to it', function () {
+      var subscriber1, subscriber2, data;
 
-          beforeEach(function () {
-            data = 'passed data';
+      beforeEach(function () {
+        data = 'passed data';
 
-            subscriber1 = doubles.double(['x', 'y', 'z']);
-            subscriber2 = doubles.double(['x', 'y', 'z']);
+        subscriber1 = {};
+        subscriber2 = {};
 
-            emitter.subscribe(subscriber1);
-            emitter.subscribe(subscriber2);
-          });
+        emitter.subscribe(subscriber1);
+        emitter.subscribe(subscriber2);
+      });
 
-          describe('when publishing an event ' + event + ' with some data, it', function () {
-            var result;
+      describe('when publishing an event, it', function () {
+        var publication;
 
-            beforeEach(function () {
-              result = emitter.publish(event, data);
-            });
+        beforeEach(function () {
+          publication = doubles.stubFunction();
+          publicationFactory.returns(publication);
 
-            it('will call the method ' + event + '() on all subscriptors exactly one time', function () {
-              expect(subscriber1[event].calledOnce).to.be.ok();
-              expect(subscriber1[event].calledOn(subscriber1)).to.be.ok();
-
-              expect(subscriber2[event].calledOnce).to.be.ok();
-              expect(subscriber2[event].calledOn(subscriber2)).to.be.ok();
-            });
-
-            it('will pass the same argument to all subscriptors', function () {
-              expect(subscriber1[event].calledWithExactly(data)).to.be.ok();
-              expect(subscriber2[event].calledWithExactly(data)).to.be.ok();
-            });
-          });
-
-          describe('while publishing an event ' + event + ', if one of the subscriptors throws an exception, it', function () {
-            beforeEach(function () {
-              subscriber1[event].throws();
-            });
-
-            it('will still call ' + event + '() on the other objects', function () {
-              emitter.publish(event, data);
-
-              expect(subscriber2[event].called).to.be.ok();
-            });
-          });
+          emitter.publish('some event', 'some data');
         });
 
-        describe('given the same object has beed subscribed several times', function () {
-          var aobject;
-          beforeEach(function () {
-            aobject = doubles.double(['x', 'y', 'z']);
-
-            emitter.subscribe(aobject);
-            emitter.subscribe(aobject);
-            emitter.subscribe(aobject);
-          });
-
-          it('when publishing an event ' + event + ', it will still call ' + event + '() on the duplicated object exactly one time', function () {
-            emitter.publish(event, "not important");
-
-            expect(aobject[event].calledOnce).to.be.ok();
-          });
+        it('will call the publication() on all subscriptors exactly one time', function () {
+          expect(publication.calledTwice).to.be.ok();
+          expect(publication.firstCall.calledWithExactly(subscriber1)).to.be.ok();
+          expect(publication.secondCall.calledWithExactly(subscriber2)).to.be.ok();
         });
       });
-    };
-  }
+    });
 
-  ['x', 'y', 'z'].forEach(knowsHowToPublishEvents());
-
-  describe("will not remember past events, and won't notify them to new subscribers", function () {
-    describe('given that several events has been published,', function () {
+    describe('given the same object has beed subscribed several times', function () {
+      var subscriber, publication;
       beforeEach(function () {
-        [
+        subscriber = {};
+
+        emitter.subscribe(subscriber);
+        emitter.subscribe(subscriber);
+        emitter.subscribe(subscriber);
+
+        publication = doubles.stubFunction();
+        publicationFactory.returns(publication);
+
+        emitter.publish('an event', 'data');
+      });
+
+      it('when publishing an event, it will still make the publication only once', function () {
+        expect(publication.calledOnce).to.be.ok();
+        expect(publication.firstCall.calledWithExactly(subscriber)).to.be.ok();
+      });
+    });
+  });
+
+  describe("will not remember past publications, and won't notify them to new subscribers", function () {
+    describe('given that several events has been published,', function () {
+      var publications;
+
+      beforeEach(function () {
+        var events = [
           {
             type:'a', data:22
           },
@@ -143,18 +120,26 @@ describe('An event emitter,', function () {
           {
             type:'a', data:2
           }
-        ].forEach(function (ev) {
-              emitter.publish(ev.type, ev.data);
-            });
+        ];
+        publications = [];
+
+        events.forEach(function (ev) {
+          publicationFactory.withArgs(ev.type, ev.data).returns(doubles.stubFunction());
+        });
+
+        events.forEach(function (ev) {
+          publications.push(emitter.publish(ev.type, ev.data));
+        });
       });
 
       it("when a new object is subscribed, it won't be notified about the past events", function () {
-        var subscriber = doubles.double(['a', 'b']);
+        var subscriber = {};
 
         emitter.subscribe(subscriber);
 
-        expect(subscriber.a.called).not.to.be.ok();
-        expect(subscriber.b.called).not.to.be.ok();
+        expect(publications[0].called).not.to.be.ok();
+        expect(publications[1].called).not.to.be.ok();
+        expect(publications[2].called).not.to.be.ok();
       });
     });
   });

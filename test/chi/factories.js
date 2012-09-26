@@ -7,17 +7,15 @@ var expect = require('expect.js'),
     chi = require('../../lib/chi');
 
 describe('The module chi has the following factories:', function () {
-  var expectedResult, expectedBus, expectedInitialState;
+  var expectedResult, expectedInitialState;
 
   beforeEach(function () {
     expectedResult = 'expected result';
-    expectedBus = doubles.makeBus();
     expectedInitialState = 'expected initial state';
 
     doubles.stubBusModule(busModule);
     doubles.stubFeedsModule(feeds);
 
-    busModule.EventBus.returns(expectedBus);
     feeds.yieldingState.returns(expectedInitialState);
     feeds.feed.returns(expectedResult);
   });
@@ -27,32 +25,36 @@ describe('The module chi has the following factories:', function () {
     feeds.restoreOriginal();
   });
 
-  it('emitter() will return a feed with a default event bus, and a yielding state that *fires* yield events', function () {
+  it('emitter() will return a feed with an event emitter and a yielding state built with that emitter', function () {
+    var emitter = doubles.makeBus();
+    busModule.emitter.returns(emitter);
+
     var result = chi.emitter();
 
-    expect(busModule.EventBus.calledOnce).to.be.ok();
-    expect(busModule.EventBus.calledWithNew()).to.be.ok();
+    expect(busModule.emitter.calledOnce).to.be.ok();
 
     expect(feeds.yieldingState.calledOnce).to.be.ok();
-    expect(feeds.yieldingState.calledWithExactly(expectedBus, 'fire')).to.be.ok();
+    expect(feeds.yieldingState.calledWithExactly(emitter)).to.be.ok();
 
     expect(feeds.feed.calledOnce).to.be.ok();
-    expect(feeds.feed.calledWithExactly(expectedBus, expectedInitialState)).to.be.ok();
+    expect(feeds.feed.calledWithExactly(emitter, expectedInitialState)).to.be.ok();
 
     expect(result).to.be(expectedResult);
   });
 
-  it('list() will return a feed with a default event bus, an a yielding state that *publishes* yield events', function () {
+  it('list() will return a feed with an event storage and a yielding state built with that storage', function () {
+    var storage = doubles.makeBus();
+    busModule.storage.returns(storage);
+
     var result = chi.list();
 
-    expect(busModule.EventBus.calledOnce).to.be.ok();
-    expect(busModule.EventBus.calledWithNew()).to.be.ok();
+    expect(busModule.storage.calledOnce).to.be.ok();
 
     expect(feeds.yieldingState.calledOnce).to.be.ok();
-    expect(feeds.yieldingState.calledWithExactly(expectedBus, 'publish')).to.be.ok();
+    expect(feeds.yieldingState.calledWithExactly(storage)).to.be.ok();
 
     expect(feeds.feed.calledOnce).to.be.ok();
-    expect(feeds.feed.calledWithExactly(expectedBus, expectedInitialState)).to.be.ok();
+    expect(feeds.feed.calledWithExactly(storage, expectedInitialState)).to.be.ok();
 
     expect(result).to.be(expectedResult);
   });

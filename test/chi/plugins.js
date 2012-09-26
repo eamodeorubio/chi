@@ -43,7 +43,8 @@ describe("The module chi can be extended with plugins:", function () {
 
         doubles.stubBusModule(busModule);
 
-        busModule.EventBus.returns(expectedBus);
+        busModule.emitter.returns(expectedBus);
+        busModule.storage.returns(expectedBus);
       });
 
       afterEach(function () {
@@ -53,8 +54,7 @@ describe("The module chi can be extended with plugins:", function () {
       it("it will create a new bus", function () {
         chi[name]();
 
-        expect(busModule.EventBus.calledOnce).to.be.ok();
-        expect(busModule.EventBus.calledWithNew()).to.be.ok();
+        expect(busModule.emitter.calledOnce || busModule.storage.calledOnce).to.be.ok();
       });
 
       it("it will return the feed built by the feeds module", function () {
@@ -77,34 +77,44 @@ describe("The module chi can be extended with plugins:", function () {
         expect(feeds.feed.calledWithExactly(expectedBus, expectedInitialState)).to.be.ok();
       });
 
-      it("without parameters, it will call the state factory with the new bus and 'fire' notification type", function () {
+      it("without parameters, it will call the state factory with an event emitter and and empty options array", function () {
         chi[name]();
 
-        expect(feeds.initialStateFor.calledWithExactly(name, expectedBus, 'fire', [])).to.be.ok();
+        expect(busModule.emitter.calledOnce).to.be.ok();
+        expect(busModule.storage.called).not.to.be.ok();
+        expect(feeds.initialStateFor.calledWithExactly(name, expectedBus, [])).to.be.ok();
       });
 
-      it("with false as a parameter, it will call the state factory with the new bus and 'fire' notification type", function () {
+      it("with false as a parameter, it will call the state factory with an event emitter and and empty options array", function () {
         chi[name](false);
 
-        expect(feeds.initialStateFor.calledWithExactly(name, expectedBus, 'fire', [])).to.be.ok();
+        expect(busModule.emitter.calledOnce).to.be.ok();
+        expect(busModule.storage.called).not.to.be.ok();
+        expect(feeds.initialStateFor.calledWithExactly(name, expectedBus, [])).to.be.ok();
       });
 
-      it("with true as a parameter, it will call the state factory with the new bus and 'publish' notification type", function () {
+      it("with true as a parameter, it will call the state factory an event storage and and empty options array", function () {
         chi[name](true);
 
-        expect(feeds.initialStateFor.calledWithExactly(name, expectedBus, 'publish', [])).to.be.ok();
+        expect(busModule.storage.calledOnce).to.be.ok();
+        expect(busModule.emitter.called).not.to.be.ok();
+        expect(feeds.initialStateFor.calledWithExactly(name, expectedBus, [])).to.be.ok();
       });
 
-      it("with extra parameters, it will pass them to the state factory in an array", function () {
+      it("with extra parameters, it will pass them to the state factory in the options array", function () {
         chi[name](true, '', 0);
 
-        expect(feeds.initialStateFor.calledWithExactly(name, expectedBus, 'publish', ['', 0])).to.be.ok();
+        expect(busModule.storage.calledOnce).to.be.ok();
+        expect(busModule.emitter.called).not.to.be.ok();
+        expect(feeds.initialStateFor.calledWithExactly(name, expectedBus, ['', 0])).to.be.ok();
       });
 
-      it("with a first argument that is not a boolean, it will pass it to the state factory in an array, and the notification type will be 'fire'", function () {
-        chi[name]('');
+      it("with a first argument that is not a boolean, it will use an event emitter and pass the argument in the options array", function () {
+        chi[name](1);
 
-        expect(feeds.initialStateFor.calledWithExactly(name, expectedBus, 'fire', [''])).to.be.ok();
+        expect(busModule.emitter.calledOnce).to.be.ok();
+        expect(busModule.storage.called).not.to.be.ok();
+        expect(feeds.initialStateFor.calledWithExactly(name, expectedBus, [1])).to.be.ok();
       });
     });
   });

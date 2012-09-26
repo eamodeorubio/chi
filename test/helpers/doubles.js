@@ -13,10 +13,10 @@ module.exports = {
     return this.double(['yieldingState', 'failedState', 'successState'], optName ? optName : "<anonymous state factory>");
   },
   makeBus:function (optName) {
-    return this.double(['subscribe', 'fire', 'publish'], optName ? optName : "<anonymous bus>");
+    return this.double(['subscribe', 'publish'], optName ? optName : "<anonymous bus>");
   },
   stubBusModule:function (busModule) {
-    this.stubModule(busModule, ['EventBus']);
+    this.stubModule(busModule, ['emitter', 'storage']);
   },
   stubFeedsModule:function (feeds) {
     this.stubModule(feeds, ['feed', 'yieldingState', 'failedState', 'isFeed', 'successState', 'initialStateFor', 'registerPlugin']);

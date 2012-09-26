@@ -74,10 +74,9 @@ describe('The module internal/feeds can be extended with plugins:', function () 
     });
 
     describe("initialStateFor() will", function () {
-      var bus, notificationType, options, result, expectedResult, output, stateFactory;
+      var bus, options, result, expectedResult, output, stateFactory;
       beforeEach(function () {
         bus = {};
-        notificationType = 'xxx';
         options = ["a", "b", "c"];
 
         output = {};
@@ -91,7 +90,7 @@ describe('The module internal/feeds can be extended with plugins:', function () 
         expectedResult = "plugin result";
         plugin.returns(expectedResult);
 
-        result = feeds.initialStateFor(name, bus, notificationType, options);
+        result = feeds.initialStateFor(name, bus, options);
       });
 
       afterEach(function () {
@@ -109,7 +108,7 @@ describe('The module internal/feeds can be extended with plugins:', function () 
 
       it("call the plugin with a yielding state as first argument (output)", function () {
         expect(feeds.yieldingState.calledOnce).to.be.ok();
-        expect(feeds.yieldingState.calledWithExactly(bus, notificationType, feeds)).to.be.ok();
+        expect(feeds.yieldingState.calledWithExactly(bus, feeds)).to.be.ok();
         expect(plugin.lastCall.args[0]).to.be(output);
       });
 

@@ -5,12 +5,14 @@ var expect = require('expect.js'),
     busModule = require('../../../lib/internal/bus');
 
 describe('An event emitter,', function () {
-  var emitter, publicationFactory;
+  var emitter, publicationFactory, output;
 
   beforeEach(function () {
     publicationFactory = doubles.stubFunction();
 
     emitter = new busModule.emitter(publicationFactory);
+
+    output = emitter.publish;
   });
 
   it('it has a subscribe() method', function () {
@@ -29,7 +31,7 @@ describe('An event emitter,', function () {
     expect(emitter.publish).to.be.a('function');
   });
 
-  describe("publish():", function () {
+  describe("publish(), event without runtime context:", function () {
     var event, data, result, publication;
     beforeEach(function () {
       event = 'x';
@@ -38,7 +40,7 @@ describe('An event emitter,', function () {
 
       publicationFactory.returns(publication);
 
-      result = emitter.publish(event, data);
+      result = output(event, data);
     });
 
     it('call the the publication factory with the same parameters', function () {
@@ -72,7 +74,7 @@ describe('An event emitter,', function () {
           publication = doubles.stubFunction();
           publicationFactory.returns(publication);
 
-          emitter.publish('some event', 'some data');
+          output('some event', 'some data');
         });
 
         it('will call the publication() on all subscriptors exactly one time', function () {
@@ -95,7 +97,7 @@ describe('An event emitter,', function () {
         publication = doubles.stubFunction();
         publicationFactory.returns(publication);
 
-        emitter.publish('an event', 'data');
+        output('an event', 'data');
       });
 
       it('when publishing an event, it will still make the publication only once', function () {
@@ -128,7 +130,7 @@ describe('An event emitter,', function () {
         });
 
         events.forEach(function (ev) {
-          publications.push(emitter.publish(ev.type, ev.data));
+          publications.push(output(ev.type, ev.data));
         });
       });
 

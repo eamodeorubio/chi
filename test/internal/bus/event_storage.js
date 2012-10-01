@@ -5,12 +5,14 @@ var expect = require('expect.js'),
     busModule = require('../../../lib/internal/bus');
 
 describe('An EventStorage,', function () {
-  var storage, emitter;
+  var storage, emitter, output;
 
   beforeEach(function () {
     emitter = doubles.makeBus();
 
     storage = new busModule.storage(emitter);
+
+    output = storage.publish;
   });
 
   describe('will delegate subscribtion to the emitter:', function () {
@@ -42,7 +44,7 @@ describe('An EventStorage,', function () {
       expect(storage.publish).to.be.a('function');
     });
 
-    describe("publish() will", function () {
+    describe("publish(), even called without runtime context, will", function () {
       var event, data, result, publication;
       beforeEach(function () {
         event = 'event type';
@@ -50,7 +52,7 @@ describe('An EventStorage,', function () {
         publication = doubles.stubFunction();
         emitter.publish.returns(publication);
 
-        result = storage.publish(event, data);
+        result = output(event, data);
       });
 
       it('call the the publish method of the emitter with the same parameters', function () {
@@ -88,7 +90,7 @@ describe('An EventStorage,', function () {
         });
 
         events.forEach(function (ev) {
-          publications.push(storage.publish(ev.type, ev.data));
+          publications.push(output(ev.type, ev.data));
         });
       });
 

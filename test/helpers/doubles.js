@@ -9,17 +9,17 @@ module.exports = {
   makeFeedState:function (optName) {
     return this.double(['yields', 'throws', 'done'], optName ? optName : "<anonymous feed state>");
   },
-  makeFeedStateFactory:function (optName) {
-    return this.double(['yieldingState', 'failedState', 'successState'], optName ? optName : "<anonymous state factory>");
-  },
   makeBus:function (optName) {
     return this.double(['subscribe', 'publish'], optName ? optName : "<anonymous bus>");
   },
   stubBusModule:function (busModule) {
     this.stubModule(busModule, ['emitter', 'storage']);
   },
+  stubStatesModule:function (states) {
+    this.stubModule(states, ['stateFactoryWith', 'registerPlugin']);
+  },
   stubFeedsModule:function (feeds) {
-    this.stubModule(feeds, ['feed', 'yieldingState', 'failedState', 'isFeed', 'successState', 'initialStateFor', 'registerPlugin']);
+    this.stubModule(feeds, ['feed', 'isFeed']);
   },
   stubFunction:function () {
     return sinon.stub();

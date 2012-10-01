@@ -74,7 +74,9 @@ function aPublicationOfEvent(event) {
         publication(null);
 
         expect(errorHandler.calledOnce).to.be.ok();
-        expect(errorHandler.lastCall.args).to.eql(['bad argument: <null>']);
+        expect(errorHandler.lastCall.args.length).to.be(1);
+        expect(errorHandler.lastCall.args[0]).to.contain('null');
+        expect(errorHandler.lastCall.args[0]).to.contain(event);
       });
     });
   });

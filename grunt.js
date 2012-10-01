@@ -46,6 +46,8 @@ module.exports = function (grunt) {
         trailing:true,
         maxparams:3,
         maxdepth:2,
+        maxstatements: 10,
+        maxcomplexity:5,
         globalstrict:true, // not really global since they are inside commonjs modules
         laxcomma:true,
         node:true

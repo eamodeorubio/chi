@@ -5,12 +5,12 @@ var expect = require('expect.js'),
     states = require('../../../lib/internal/states');
 
 describe('A YieldingState', function () {
-  var bus, stateFactory, state;
+  var output, factory, state;
   beforeEach(function () {
-    bus = doubles.makeBus();
-    stateFactory = doubles.makeFeedStateFactory();
+    output = doubles.stubFunction();
+    factory = doubles.stubFunction();
 
-    state = states.yieldingState(bus, stateFactory);
+    state = states.yieldingState(output, factory);
   });
 
   describe('can yield data:', function () {
@@ -32,9 +32,8 @@ describe('A YieldingState', function () {
       });
 
       it('will publish exactly once the "yield" event on the bus with the data', function () {
-        expect(bus.publish.calledOnce).to.be.ok();
-        expect(bus.publish.calledOn(bus)).to.be.ok();
-        expect(bus.publish.calledWithExactly('yield', data)).to.be.ok();
+        expect(output.calledOnce).to.be.ok();
+        expect(output.calledWithExactly('yield', data)).to.be.ok();
       });
     });
   });
@@ -50,19 +49,21 @@ describe('A YieldingState', function () {
       beforeEach(function () {
         error = "some error";
         failedState = doubles.makeFeedState();
-        stateFactory.failedState.withArgs(error).returns(failedState);
+        factory.returns(failedState);
 
         result = state.throws(error);
       });
 
       it('will return a FailedState with the thrown error', function () {
+        expect(factory.calledOnce).to.be.ok();
+        expect(factory.calledWithExactly('failed', error)).to.be.ok();
+
         expect(result).to.be(failedState);
       });
 
       it('publish exactly once the "throw" event on the bus with the throwed error', function () {
-        expect(bus.publish.calledOnce).to.be.ok();
-        expect(bus.publish.calledOn(bus)).to.be.ok();
-        expect(bus.publish.calledWithExactly('throw', error)).to.be.ok();
+        expect(output.calledOnce).to.be.ok();
+        expect(output.calledWithExactly('throw', error)).to.be.ok();
       });
     });
   });
@@ -77,19 +78,22 @@ describe('A YieldingState', function () {
 
       beforeEach(function () {
         successState = doubles.makeFeedState();
-        stateFactory.successState.returns(successState);
+        factory.returns(successState);
 
         result = state.done();
       });
 
       it('will return a SuccessState', function () {
+        expect(factory.calledOnce).to.be.ok();
+        expect(factory.calledWithExactly('success')).to.be.ok();
+
         expect(result).to.be(successState);
       });
 
       it('publish exactly once the "done" event on the bus', function () {
-        expect(bus.publish.calledOnce).to.be.ok();
-        expect(bus.publish.calledOn(bus)).to.be.ok();
-        expect(bus.publish.calledWithExactly('done')).to.be.ok();
+        expect(output.calledOnce).to.be.ok();
+        expect(output.calledOn(output)).to.be.ok();
+        expect(output.calledWithExactly('done')).to.be.ok();
       });
     });
   });

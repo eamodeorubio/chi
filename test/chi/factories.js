@@ -41,7 +41,7 @@ describe('The module chi has the following factories:', function () {
     expect(states.stateFactoryWith.calledWithExactly(emitter.publish)).to.be.ok();
 
     expect(stateFactory.calledOnce).to.be.ok();
-    expect(stateFactory.calledWithExactly('yielding')).to.be.ok();
+    expect(stateFactory.calledWithExactly('unit')).to.be.ok();
 
     expect(feeds.feed.calledOnce).to.be.ok();
     expect(feeds.feed.calledWithExactly(emitter, expectedInitialState)).to.be.ok();
@@ -63,7 +63,7 @@ describe('The module chi has the following factories:', function () {
     expect(states.stateFactoryWith.calledWithExactly(storage.publish)).to.be.ok();
 
     expect(stateFactory.calledOnce).to.be.ok();
-    expect(stateFactory.calledWithExactly('yielding')).to.be.ok();
+    expect(stateFactory.calledWithExactly('unit')).to.be.ok();
 
     expect(feeds.feed.calledOnce).to.be.ok();
     expect(feeds.feed.calledWithExactly(storage, expectedInitialState)).to.be.ok();

@@ -4,13 +4,13 @@ var expect = require('expect.js'),
     doubles = require('../../helpers/doubles'),
     states = require('../../../lib/internal/states');
 
-describe('A YieldingState', function () {
+describe('An UnitState', function () {
   var output, factory, state;
   beforeEach(function () {
     output = doubles.stubFunction();
     factory = doubles.stubFunction();
 
-    state = new states.YieldingState(output, factory);
+    state = new states.UnitState(output, factory);
   });
 
   describe('can yield data:', function () {

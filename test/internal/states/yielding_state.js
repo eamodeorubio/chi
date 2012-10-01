@@ -92,7 +92,6 @@ describe('A YieldingState', function () {
 
       it('publish exactly once the "done" event on the bus', function () {
         expect(output.calledOnce).to.be.ok();
-        expect(output.calledOn(output)).to.be.ok();
         expect(output.calledWithExactly('done')).to.be.ok();
       });
     });

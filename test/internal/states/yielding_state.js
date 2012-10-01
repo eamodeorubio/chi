@@ -10,7 +10,7 @@ describe('A YieldingState', function () {
     output = doubles.stubFunction();
     factory = doubles.stubFunction();
 
-    state = states.yieldingState(output, factory);
+    state = new states.YieldingState(output, factory);
   });
 
   describe('can yield data:', function () {
@@ -56,7 +56,7 @@ describe('A YieldingState', function () {
 
       it('will return a FailedState with the thrown error', function () {
         expect(factory.calledOnce).to.be.ok();
-        expect(factory.calledWithExactly('failed', error)).to.be.ok();
+        expect(factory.calledWithExactly('failed', [error])).to.be.ok();
 
         expect(result).to.be(failedState);
       });

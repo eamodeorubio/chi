@@ -67,14 +67,14 @@ function aPublicationOfEvent(event) {
         publication(listener);
 
         expect(errorHandler.calledOnce).to.be.ok();
-        expect(errorHandler.calledWithExactly(error)).to.be.ok();
+        expect(errorHandler.lastCall.args).to.eql([error]);
       });
 
       it("errors caused by a bad listener", function () {
         publication(null);
 
         expect(errorHandler.calledOnce).to.be.ok();
-        expect(errorHandler.calledWithExactly('bad argument: <null>')).to.be.ok();
+        expect(errorHandler.lastCall.args).to.eql(['bad argument: <null>']);
       });
     });
   });

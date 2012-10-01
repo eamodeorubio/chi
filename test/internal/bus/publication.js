@@ -6,12 +6,13 @@ var expect = require('expect.js'),
 
 function aPublicationOfEvent(event) {
   describe("A publication, of event '" + event + "' with data 'args':", function () {
-    var data, publication;
+    var data, publication, errorHandler;
 
     beforeEach(function () {
       data = 'args';
+      errorHandler = doubles.stubFunction();
 
-      publication = new busModule.publication(event, data);
+      publication = new busModule.publication(event, data, errorHandler);
     });
 
     it('is a function', function () {
@@ -55,6 +56,25 @@ function aPublicationOfEvent(event) {
         expect(function () {
           publication(listener);
         }).not.to.throwError();
+      });
+    });
+
+    describe("it will pass any error to the errorHandler:", function () {
+      it("errors on the event processing", function () {
+        var listener = doubles.double([event]), error = 'very bad error';
+        listener[event].throws(error);
+
+        publication(listener);
+
+        expect(errorHandler.calledOnce).to.be.ok();
+        expect(errorHandler.calledWithExactly(error)).to.be.ok();
+      });
+
+      it("errors caused by a bad listener", function () {
+        publication(null);
+
+        expect(errorHandler.calledOnce).to.be.ok();
+        expect(errorHandler.calledWithExactly('bad argument: <null>')).to.be.ok();
       });
     });
   });

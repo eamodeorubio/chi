@@ -1,6 +1,7 @@
 "use strict";
 
 var expect = require('expect.js'),
+    sinon = require('sinon'),
     doubles = require('../../helpers/doubles'),
     feeds = require('../../../lib/internal/feeds');
 
@@ -37,13 +38,20 @@ describe("The module internal/feeds can be extended with plugins:", function () 
       });
 
       describe("when the plugged method is invoked with some arguments,", function () {
-        var arg1, arg2, feedToChain;
+        var arg1, arg2, feedToChain, chainStub;
         beforeEach(function () {
           arg1 = "arg1";
           arg2 = "arg2";
+          feedToChain = doubles.makeFeed();
           plugin.returns(feedToChain);
 
+          chainStub = sinon.stub(newFeed, 'chain');
+
           newFeed[name](arg1, arg2);
+        });
+
+        afterEach(function () {
+          chainStub.restore();
         });
 
         it("will call the plugin with the busFactory and the args as an array to create a new feed", function () {
@@ -52,8 +60,9 @@ describe("The module internal/feeds can be extended with plugins:", function () 
         });
 
         it("will call chain with the resulting feed", function () {
-          expect(newFeed.chain.calledOnce).to.be.ok();
-          expect(newFeed.chain.calledWithExactly(feedToChain)).to.be.ok();
+          expect(chainStub.calledOnce).to.be.ok();
+          expect(chainStub.calledOn(newFeed)).to.be.ok();
+          expect(chainStub.calledWithExactly(feedToChain)).to.be.ok();
         });
       });
     });

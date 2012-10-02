@@ -18,7 +18,7 @@ describe("The module internal/feeds can be extended with plugins:", function () 
       feeds.registerPlugin(name, plugin);
     });
 
-    describe("when a feed is created,", function () {
+    describe("when a feed is created:", function () {
       var newFeed, busFactory, stateFactory;
       beforeEach(function () {
         var bus = doubles.makeBus();
@@ -34,6 +34,23 @@ describe("The module internal/feeds can be extended with plugins:", function () 
 
       it("it will have a method with the same name that the plugin", function () {
         expect(newFeed[name]).to.be.a('function');
+      });
+
+      describe("when the pluged method is invoked with some arguments,", function () {
+        var newBus, arg1, arg2;
+        beforeEach(function () {
+          arg1 = "arg1";
+          arg2 = "arg2";
+
+          newBus = doubles.makeBus();
+          busFactory.returns(newBus);
+
+          newFeed[name](arg1, arg2);
+        });
+
+        it("will call the busFactory to create a new bus", function () {
+          expect(busFactory.calledTwice).to.be.ok();
+        });
       });
     });
   });

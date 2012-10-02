@@ -47,7 +47,7 @@ describe("The module internal/feeds can be extended with plugins:", function () 
 
         it("will call the plugin with the busFactory and the args as an array to create a new feed", function () {
           expect(plugin.calledOnce).to.be.ok();
-          expect(plugin.calledExactlyWith(busFactory, [arg1, arg2])).to.be.ok();
+          expect(plugin.calledWithExactly(busFactory, [arg1, arg2])).to.be.ok();
         });
       });
     });

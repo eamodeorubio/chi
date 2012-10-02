@@ -12,9 +12,7 @@ describe('The module chi has the following factories:', function () {
 
   beforeEach(function () {
     expectedResult = 'expected result';
-    expectedInitialState = 'expected initial state';
 
-    doubles.stubBusModule(busModule);
     doubles.stubFeedsModule(feeds);
     doubles.stubStatesModule(states);
 
@@ -22,51 +20,36 @@ describe('The module chi has the following factories:', function () {
   });
 
   afterEach(function () {
-    busModule.restoreOriginal();
     feeds.restoreOriginal();
     states.restoreOriginal();
   });
 
   it('emitter() will return a feed with an event emitter and a yielding state built with that emitter', function () {
-    var emitter = doubles.makeBus(), stateFactory = doubles.stubFunction();
-    busModule.emitter.returns(emitter);
-    stateFactory.returns(expectedInitialState);
-    states.stateFactoryWith.returns(stateFactory);
+    var stateFactory = doubles.stubFunction();
+    states.stateFactory.returns(stateFactory);
 
     var result = chi.emitter();
 
-    expect(busModule.emitter.calledOnce).to.be.ok();
-
-    expect(states.stateFactoryWith.calledOnce).to.be.ok();
-    expect(states.stateFactoryWith.calledWithExactly(emitter.publish)).to.be.ok();
-
-    expect(stateFactory.calledOnce).to.be.ok();
-    expect(stateFactory.calledWithExactly('unit')).to.be.ok();
+    expect(states.stateFactory.calledOnce).to.be.ok();
+    expect(states.stateFactory.calledWithExactly('unit')).to.be.ok();
 
     expect(feeds.feed.calledOnce).to.be.ok();
-    expect(feeds.feed.calledWithExactly(emitter, expectedInitialState)).to.be.ok();
+    expect(feeds.feed.calledWithExactly(busModule.emitter, stateFactory)).to.be.ok();
 
     expect(result).to.be(expectedResult);
   });
 
   it('list() will return a feed with an event storage and a yielding state built with that storage', function () {
-    var storage = doubles.makeBus(), stateFactory = doubles.stubFunction();
-    busModule.storage.returns(storage);
-    stateFactory.returns(expectedInitialState);
-    states.stateFactoryWith.returns(stateFactory);
+    var stateFactory = doubles.stubFunction();
+    states.stateFactory.returns(stateFactory);
 
     var result = chi.list();
 
-    expect(busModule.storage.calledOnce).to.be.ok();
-
-    expect(states.stateFactoryWith.calledOnce).to.be.ok();
-    expect(states.stateFactoryWith.calledWithExactly(storage.publish)).to.be.ok();
-
-    expect(stateFactory.calledOnce).to.be.ok();
-    expect(stateFactory.calledWithExactly('unit')).to.be.ok();
+    expect(states.stateFactory.calledOnce).to.be.ok();
+    expect(states.stateFactory.calledWithExactly('unit')).to.be.ok();
 
     expect(feeds.feed.calledOnce).to.be.ok();
-    expect(feeds.feed.calledWithExactly(storage, expectedInitialState)).to.be.ok();
+    expect(feeds.feed.calledWithExactly(busModule.storage, stateFactory)).to.be.ok();
 
     expect(result).to.be(expectedResult);
   });

@@ -19,12 +19,17 @@ describe("The module internal/feeds can be extended with plugins:", function () 
     });
 
     describe("when a feed is created,", function () {
-      var newFeed, bus, state;
+      var newFeed, busFactory, stateFactory;
       beforeEach(function () {
-        state = doubles.makeFeedState();
-        bus = doubles.makeBus();
+        var bus = doubles.makeBus();
+        busFactory = doubles.stubFunction();
+        busFactory.returns(bus);
 
-        newFeed = feeds.feed(bus, state);
+        var initialState = doubles.makeFeedState();
+        stateFactory = doubles.stubFunction();
+        stateFactory.returns(initialState);
+
+        newFeed = feeds.feed(busFactory, stateFactory);
       });
 
       it("it will have a method with the same name that the plugin", function () {

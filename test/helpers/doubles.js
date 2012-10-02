@@ -19,7 +19,7 @@ module.exports = {
     this.stubModule(states, ['stateFactoryWith', 'registerPlugin']);
   },
   stubFeedsModule:function (feeds) {
-    this.stubModule(feeds, ['feed', 'isFeed']);
+    this.stubModule(feeds, ['feed', 'isFeed', 'registerPlugin']);
   },
   stubFunction:function () {
     return sinon.stub();

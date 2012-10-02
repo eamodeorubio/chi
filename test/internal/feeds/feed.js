@@ -5,29 +5,29 @@ var expect = require('expect.js'),
     feeds = require('../../../lib/internal/feeds');
 
 describe('Given a Feed created with a bus factory and state factory,', function () {
-  var feed, bus, initialState, isFeed, busFactory, stateFactory;
+  var feed, bus, initialState, isFeed, makeBus, makeState;
 
   beforeEach(function () {
     bus = doubles.makeBus();
-    busFactory = doubles.stubFunction();
-    busFactory.returns(bus);
+    makeBus = doubles.stubFunction();
+    makeBus.returns(bus);
 
     initialState = doubles.makeFeedState();
-    stateFactory = doubles.stubFunction();
-    stateFactory.returns(initialState);
+    makeState = doubles.stubFunction();
+    makeState.returns(initialState);
 
     isFeed = doubles.stubFunction();
 
-    feed = feeds.feed(busFactory, stateFactory, isFeed);
+    feed = feeds.feed(makeBus, makeState, isFeed);
   });
 
-  it("the feed will call busFactory to create a new bus", function () {
-    expect(busFactory.calledOnce).to.be.ok();
+  it("the feed will call makeBus to create a new bus", function () {
+    expect(makeBus.calledOnce).to.be.ok();
   });
 
-  it("the feed will call stateFactory to create an initial state", function () {
-    expect(stateFactory.calledOnce).to.be.ok();
-    expect(stateFactory.calledWithExactly(bus.publish)).to.be.ok();
+  it("the feed will call makeState to create an initial state", function () {
+    expect(makeState.calledOnce).to.be.ok();
+    expect(makeState.calledWithExactly(bus.publish)).to.be.ok();
   });
 
   describe('it can be chained:', function () {

@@ -20,17 +20,17 @@ describe("The module internal/feeds can be extended with plugins:", function () 
     });
 
     describe("and given a feed has been created:", function () {
-      var newFeed, busFactory, stateFactory;
+      var newFeed, makeBus, makeState;
       beforeEach(function () {
         var bus = doubles.makeBus();
-        busFactory = doubles.stubFunction();
-        busFactory.returns(bus);
+        makeBus = doubles.stubFunction();
+        makeBus.returns(bus);
 
         var initialState = doubles.makeFeedState();
-        stateFactory = doubles.stubFunction();
-        stateFactory.returns(initialState);
+        makeState = doubles.stubFunction();
+        makeState.returns(initialState);
 
-        newFeed = feeds.feed(busFactory, stateFactory);
+        newFeed = feeds.feed(makeBus, makeState);
       });
 
       it("the new feed will have a method with the same name that the plugin", function () {
@@ -56,9 +56,9 @@ describe("The module internal/feeds can be extended with plugins:", function () 
           chainStub.restore();
         });
 
-        it("will call the plugin with the busFactory and the args as an array to create a new feed", function () {
+        it("will call the plugin with the makeBus function and the args as an array to create a new feed", function () {
           expect(plugin.calledOnce).to.be.ok();
-          expect(plugin.calledWithExactly(busFactory, [arg1, arg2])).to.be.ok();
+          expect(plugin.calledWithExactly(makeBus, [arg1, arg2])).to.be.ok();
         });
 
         it("will call chain with the resulting feed", function () {

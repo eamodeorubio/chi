@@ -34,6 +34,42 @@ describe("The module chi can be extended with plugins:", function () {
       expect(states.registerPlugin.calledWithExactly(name, plugin)).to.be.ok();
     });
 
+    it("will register a function in the feeds module as a plugin", function () {
+      expect(feeds.registerPlugin.calledOnce).to.be.ok();
+      expect(feeds.registerPlugin.lastCall.args.length).to.be(2);
+      expect(feeds.registerPlugin.lastCall.args[0]).to.be(name);
+      expect(feeds.registerPlugin.lastCall.args[1]).to.be.a('function');
+    });
+
+    describe("the registered function in the feeds module, when called with a bus factory and some options", function () {
+      var makeBus, options, result, makeState, expectedResult;
+      beforeEach(function () {
+        expectedResult = 'new feed';
+        feeds.feed.returns(expectedResult);
+        makeBus = doubles.stubFunction();
+        makeState = doubles.stubFunction();
+        options = ['a', 'b', 'c'];
+
+        states.stateFactory.returns(makeState);
+
+        result = feeds.registerPlugin.lastCall.args[1](makeBus, options);
+      });
+
+      it("will call the states module with the options and the plugin name to create a state factory", function () {
+        expect(states.stateFactory.calledOnce).to.be.ok();
+        expect(states.stateFactory.calledWithExactly(name, options)).to.be.ok();
+      });
+
+      it("will call the feeds module with the bus factory and the state factory to create a feed", function () {
+        expect(feeds.feed.calledOnce).to.be.ok();
+        expect(feeds.feed.calledWithExactly(makeBus, makeState)).to.be.ok();
+      });
+
+      it("will return the resulting feed", function () {
+        expect(result).to.be(expectedResult);
+      });
+    });
+
     it("then a factory method with the same name that the plugin will be available in chi", function () {
       expect(chi[name]).to.be.a('function');
     });

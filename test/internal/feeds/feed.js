@@ -27,7 +27,7 @@ describe('Given a Feed created with a bus factory and state factory,', function 
 
   it("the feed will call stateFactory to create an initial state", function () {
     expect(stateFactory.calledOnce).to.be.ok();
-    expect(stateFactory.calledWithExactly(bus)).to.be.ok();
+    expect(stateFactory.calledWithExactly(bus.publish)).to.be.ok();
   });
 
   describe('it can be chained:', function () {

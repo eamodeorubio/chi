@@ -38,16 +38,18 @@ describe("The module internal/feeds can be extended with plugins:", function () 
       });
 
       describe("when the plugged method is invoked with some arguments,", function () {
-        var arg1, arg2, feedToChain, chainStub;
+        var arg1, arg2, feedToChain, chainStub, result, expectedResult;
         beforeEach(function () {
           arg1 = "arg1";
           arg2 = "arg2";
           feedToChain = doubles.makeFeed();
           plugin.returns(feedToChain);
+          expectedResult = 'expected result';
 
           chainStub = sinon.stub(newFeed, 'chain');
+          chainStub.returns(expectedResult);
 
-          newFeed[name](arg1, arg2);
+          result = newFeed[name](arg1, arg2);
         });
 
         afterEach(function () {
@@ -63,6 +65,10 @@ describe("The module internal/feeds can be extended with plugins:", function () 
           expect(chainStub.calledOnce).to.be.ok();
           expect(chainStub.calledOn(newFeed)).to.be.ok();
           expect(chainStub.calledWithExactly(feedToChain)).to.be.ok();
+        });
+
+        it("will return the result of chaining feeds", function () {
+          expect(result).to.be(expectedResult);
         });
       });
     });

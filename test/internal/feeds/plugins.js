@@ -37,10 +37,11 @@ describe("The module internal/feeds can be extended with plugins:", function () 
       });
 
       describe("when the plugged method is invoked with some arguments,", function () {
-        var arg1, arg2;
+        var arg1, arg2, feedToChain;
         beforeEach(function () {
           arg1 = "arg1";
           arg2 = "arg2";
+          plugin.returns(feedToChain);
 
           newFeed[name](arg1, arg2);
         });
@@ -48,6 +49,11 @@ describe("The module internal/feeds can be extended with plugins:", function () 
         it("will call the plugin with the busFactory and the args as an array to create a new feed", function () {
           expect(plugin.calledOnce).to.be.ok();
           expect(plugin.calledWithExactly(busFactory, [arg1, arg2])).to.be.ok();
+        });
+
+        it("will call chain with the resulting feed", function () {
+          expect(newFeed.chain.calledOnce).to.be.ok();
+          expect(newFeed.chain.calledWithExactly(feedToChain)).to.be.ok();
         });
       });
     });

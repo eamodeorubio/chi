@@ -8,7 +8,7 @@ describe('Given a FailedState with an error,', function () {
   var state, error;
   beforeEach(function () {
     error = 'some error';
-    state = states.stateFactoryWith('not used')('failed', [error]);
+    state = states.stateFactory('failed', [error])('not used');
   });
 
   function cannotDoAnymore(action) {

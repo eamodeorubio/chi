@@ -7,7 +7,7 @@ var expect = require('expect.js'),
 describe('Given a SuccessState,', function () {
   var state;
   beforeEach(function () {
-    state = states.stateFactoryWith('not used')('success');
+    state = states.stateFactory('success')('not used');
   });
 
   function cannotDoAnymore(action) {

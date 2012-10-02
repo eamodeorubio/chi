@@ -16,7 +16,7 @@ module.exports = {
     this.stubModule(busModule, ['emitter', 'storage']);
   },
   stubStatesModule:function (states) {
-    this.stubModule(states, ['stateFactoryWith', 'stateFactory', 'registerPlugin']);
+    this.stubModule(states, ['stateFactory', 'registerPlugin']);
   },
   stubFeedsModule:function (feeds) {
     this.stubModule(feeds, ['feed', 'isFeed', 'registerPlugin']);

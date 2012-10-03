@@ -1,12 +1,12 @@
 "use strict";
 
 var expect = require('expect.js'),
-    doubles = require('../../helpers/doubles'),
-    states = require('../../../lib/internal/states');
+    doubles = require('../helpers/doubles'),
+    plugins = require('../../lib/internal/plugins');
 
-describe('The module internal/states can be extended with plugins:', function () {
+describe('The module internal/plugins:', function () {
   it("has a registerPlugin function", function () {
-    expect(states.registerPlugin).to.be.a('function');
+    expect(plugins.registerPlugin).to.be.a('function');
   });
 
   describe("given a plugin has been registered,", function () {
@@ -16,15 +16,15 @@ describe('The module internal/states can be extended with plugins:', function ()
       options = ['x', 'y', 'z'];
       plugin = doubles.stubFunction();
 
-      states.registerPlugin(name, plugin);
+      plugins.registerPlugin(name, plugin);
     });
 
     it("when stateFactory is called with the plugin names and some options, it will return a function", function () {
-      expect(states.stateFactory(name, options)).to.be.a('function');
+      expect(plugins.stateFactory(name, options)).to.be.a('function');
     });
 
     it("when stateFactory is called with a non existent plugin name, it will return undefined", function () {
-      expect(states.stateFactory('not exists', options)).to.be(undefined);
+      expect(plugins.stateFactory('not exists', options)).to.be(undefined);
     });
 
     describe("given stateFactory has been called with the plugin name and some options, the returned function will", function () {
@@ -35,7 +35,7 @@ describe('The module internal/states can be extended with plugins:', function ()
         expectedResult = {};
         plugin.returns(expectedResult);
 
-        factory = states.stateFactory(name, options);
+        factory = plugins.stateFactory(name, options);
 
         result = factory(output);
       });
@@ -69,7 +69,7 @@ describe('The module internal/states can be extended with plugins:', function ()
       var factoryBindedToOutput, originalOutput;
       beforeEach(function () {
         originalOutput = 'original state output';
-        states.stateFactory(name, options)(originalOutput);
+        plugins.stateFactory(name, options)(originalOutput);
 
         factoryBindedToOutput = plugin.lastCall.args[1];
       });

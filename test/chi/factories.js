@@ -1,55 +1,36 @@
 "use strict";
 
 var expect = require('expect.js'),
-    doubles = require('./../helpers/doubles'),
-    busModule = require('../../lib/internal/bus'),
-    plugins = require('../../lib/internal/plugins'),
-    feeds = require('../../lib/internal/feeds'),
+    sinon = require('sinon'),
     chi = require('../../lib/chi');
 
-describe('The module chi has the following factories:', function () {
-  var expectedResult, expectedInitialState;
+describe('The module chi has the following predefined factories:', function () {
+  var expectedResult;
 
   beforeEach(function () {
     expectedResult = 'expected result';
-
-    doubles.stubFeedsModule(feeds);
-    doubles.stubPluginsModule(plugins);
-
-    feeds.feed.returns(expectedResult);
+    sinon.stub(chi, 'unit');
+    chi.unit.returns(expectedResult);
   });
 
   afterEach(function () {
-    feeds.restoreOriginal();
-    plugins.restoreOriginal();
+    chi.unit.restore();
   });
 
-  it('emitter() will return a feed with an event emitter and a yielding state built with that emitter', function () {
-    var stateFactory = doubles.stubFunction();
-    plugins.stateFactory.returns(stateFactory);
-
+  it('emitter() will return an "unit" feed without memory', function () {
     var result = chi.emitter();
 
-    expect(plugins.stateFactory.calledOnce).to.be.ok();
-    expect(plugins.stateFactory.calledWithExactly('unit', [])).to.be.ok();
-
-    expect(feeds.feed.calledOnce).to.be.ok();
-    expect(feeds.feed.calledWithExactly(busModule.emitter, stateFactory)).to.be.ok();
+    expect(chi.unit.calledOnce).to.be.ok();
+    expect(chi.unit.calledWithExactly(false)).to.be.ok();
 
     expect(result).to.be(expectedResult);
   });
 
-  it('list() will return a feed with an event storage and a yielding state built with that storage', function () {
-    var stateFactory = doubles.stubFunction();
-    plugins.stateFactory.returns(stateFactory);
-
+  it('list() will return an "unit" feed with memory', function () {
     var result = chi.list();
 
-    expect(plugins.stateFactory.calledOnce).to.be.ok();
-    expect(plugins.stateFactory.calledWithExactly('unit', [])).to.be.ok();
-
-    expect(feeds.feed.calledOnce).to.be.ok();
-    expect(feeds.feed.calledWithExactly(busModule.storage, stateFactory)).to.be.ok();
+    expect(chi.unit.calledOnce).to.be.ok();
+    expect(chi.unit.calledWithExactly(true)).to.be.ok();
 
     expect(result).to.be(expectedResult);
   });

@@ -31,7 +31,7 @@ describe('The module chi has the following factories:', function () {
     var result = chi.emitter();
 
     expect(plugins.stateFactory.calledOnce).to.be.ok();
-    expect(plugins.stateFactory.calledWithExactly('unit')).to.be.ok();
+    expect(plugins.stateFactory.calledWithExactly('unit', [])).to.be.ok();
 
     expect(feeds.feed.calledOnce).to.be.ok();
     expect(feeds.feed.calledWithExactly(busModule.emitter, stateFactory)).to.be.ok();
@@ -46,7 +46,7 @@ describe('The module chi has the following factories:', function () {
     var result = chi.list();
 
     expect(plugins.stateFactory.calledOnce).to.be.ok();
-    expect(plugins.stateFactory.calledWithExactly('unit')).to.be.ok();
+    expect(plugins.stateFactory.calledWithExactly('unit', [])).to.be.ok();
 
     expect(feeds.feed.calledOnce).to.be.ok();
     expect(feeds.feed.calledWithExactly(busModule.storage, stateFactory)).to.be.ok();

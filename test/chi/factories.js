@@ -1,20 +1,16 @@
 "use strict";
 
 var expect = require('expect.js'),
-    sinon = require('sinon'),
-    chi = require('../../lib/chi');
+    doubles = require('./../helpers/doubles'),
+    chi = require('../../lib/chi').make();
 
-describe('The module chi has the following predefined factories:', function () {
+describe('A Chi has the following predefined factories:', function () {
   var expectedResult;
 
   beforeEach(function () {
     expectedResult = 'expected result';
-    sinon.stub(chi, 'unit');
+    chi.unit = doubles.stubFunction();
     chi.unit.returns(expectedResult);
-  });
-
-  afterEach(function () {
-    chi.unit.restore();
   });
 
   it('emitter() will return an "unit" feed without memory', function () {

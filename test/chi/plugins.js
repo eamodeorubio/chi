@@ -3,10 +3,24 @@
 var expect = require('expect.js'),
     doubles = require('./../helpers/doubles'),
     busModule = require('../../lib/internal/bus'),
-    plugins = require('../../lib/internal/plugins'),
-    chi = require('../../lib/chi');
+    pluginsModule = require('../../lib/internal/plugins'),
+    chiModule = require('../../lib/chi');
 
-describe("The module chi can be extended with plugins:", function () {
+describe("A chi instance can be extended with plugins:", function () {
+  var chi, plugins;
+  beforeEach(function () {
+    plugins = doubles.makePluginScope();
+
+    doubles.stubPluginsModule(pluginsModule);
+    pluginsModule.scope.returns(plugins);
+
+    chi = chiModule.make();
+  });
+
+  afterEach(function () {
+    pluginsModule.restoreOriginal();
+  });
+
   it("has a registerPlugin function", function () {
     expect(chi.registerPlugin).to.be.a('function');
   });
@@ -18,16 +32,12 @@ describe("The module chi can be extended with plugins:", function () {
       plugin = doubles.stubFunction();
       feedFactory = doubles.stubFunction();
 
-      doubles.stubPluginsModule(plugins);
-
       plugins.feedFactoryForPlugin.returns(feedFactory);
 
       chi.registerPlugin(name, plugin);
     });
 
-    afterEach(function () {
-      plugins.restoreOriginal();
-    });
+
 
     it("will register the plugin in the states module", function () {
       expect(plugins.registerPlugin.calledOnce).to.be.ok();

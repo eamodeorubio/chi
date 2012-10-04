@@ -15,11 +15,17 @@ module.exports = {
   makeRegistry:function (optName) {
     return this.double(['factoryFor', 'registerFactoryFor', 'decorateWithPlugins'], optName ? optName : "<anonymous registry>");
   },
+  makePluginScope:function (optName) {
+    return this.double(['stateFactory', 'registerPlugin', 'feedFactoryForPlugin'], optName ? optName : "<anonymous plugin scope>");
+  },
   stubBusModule:function (busModule) {
     this.stubModule(busModule, ['emitter', 'storage']);
   },
+  stubRegistryModule:function (registry) {
+    this.stubModule(registry, ['factoriesRegistry']);
+  },
   stubPluginsModule:function (plugins) {
-    this.stubModule(plugins, ['stateFactory', 'registerPlugin', 'feedFactoryForPlugin']);
+    this.stubModule(plugins, ['scope']);
   },
   stubFeedsModule:function (feeds) {
     this.stubModule(feeds, ['feed', 'isFeed']);

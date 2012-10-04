@@ -12,6 +12,9 @@ module.exports = {
   makeBus:function (optName) {
     return this.double(['subscribe', 'publish'], optName ? optName : "<anonymous bus>");
   },
+  makeRegistry:function (optName) {
+    return this.double(['factoryFor', 'registerFactoryFor', 'decorateWithPlugins'], optName ? optName : "<anonymous registry>");
+  },
   stubBusModule:function (busModule) {
     this.stubModule(busModule, ['emitter', 'storage']);
   },

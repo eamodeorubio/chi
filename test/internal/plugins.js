@@ -35,10 +35,10 @@ describe('The module internal/plugins:', function () {
       });
 
       describe("the returned feed factory function, when called with a bus factory and some options", function () {
-        var makeBus, options, result, makeState, expectedResult;
+        var makeBus, options, aFeed, makeState, expectedResultingFeed;
         beforeEach(function () {
-          expectedResult = 'new feed';
-          feeds.feed.returns(expectedResult);
+          expectedResultingFeed = doubles.double(['chain']);
+          feeds.feed.returns(expectedResultingFeed);
           makeBus = doubles.stubFunction();
           makeState = doubles.stubFunction();
           options = ['a', 'b', 'c'];
@@ -46,7 +46,7 @@ describe('The module internal/plugins:', function () {
           sinon.stub(plugins, 'stateFactory');
           plugins.stateFactory.returns(makeState);
 
-          result = plugins.feedFactoryForPlugin(name)(makeBus, options);
+          aFeed = plugins.feedFactoryForPlugin(name)(makeBus, options);
         });
 
         afterEach(function () {
@@ -64,7 +64,60 @@ describe('The module internal/plugins:', function () {
         });
 
         it("will return the resulting feed", function () {
-          expect(result).to.be(expectedResult);
+          expect(aFeed).to.be(expectedResultingFeed);
+        });
+
+        it("the result will have a method with the same name that the plugin", function () {
+          expect(aFeed[name]).to.be.a('function');
+        });
+
+        describe("when the plugged method is invoked with some arguments,", function () {
+          var arg1, arg2, feedToChain, anotherFeed, anotherExpectedFeed, anotherMakeState;
+          beforeEach(function () {
+            anotherExpectedFeed = doubles.double(['chain']);
+            anotherMakeState = doubles.stubFunction();
+            arg1 = "arg1";
+            arg2 = "arg2";
+
+            feedToChain = doubles.double(['chain']);
+
+            plugins.stateFactory.reset();
+            feeds.feed.reset();
+            feeds.feed.returns(feedToChain);
+            plugins.stateFactory.returns(anotherMakeState);
+
+            aFeed.chain.returns(anotherExpectedFeed);
+
+            anotherFeed = aFeed[name](arg1, arg2);
+          });
+
+          it("will ask stateFactory() with the options and the plugin name to create a state factory", function () {
+            expect(plugins.stateFactory.calledOnce).to.be.ok();
+            expect(plugins.stateFactory.calledWithExactly(name, [arg1, arg2])).to.be.ok();
+          });
+
+          it("will call the feeds module with the bus factory and the state factory to create a feed", function () {
+            expect(feeds.feed.calledOnce).to.be.ok();
+            expect(feeds.feed.calledWithExactly(makeBus, anotherMakeState)).to.be.ok();
+          });
+
+          it("will return the resulting feed", function () {
+            expect(aFeed).to.be(expectedResultingFeed);
+          });
+
+          it("the result will have a method with the same name that the plugin", function () {
+            expect(aFeed[name]).to.be.a('function');
+          });
+
+          it("will call chain with the resulting feed", function () {
+            expect(aFeed.chain.calledOnce).to.be.ok();
+            expect(aFeed.chain.calledOn(aFeed)).to.be.ok();
+            expect(aFeed.chain.calledWithExactly(feedToChain)).to.be.ok();
+          });
+
+          it("will return the result of chaining feeds", function () {
+            expect(anotherFeed).to.be(anotherExpectedFeed);
+          });
         });
       });
     });

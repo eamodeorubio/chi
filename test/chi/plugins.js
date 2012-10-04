@@ -3,7 +3,6 @@
 var expect = require('expect.js'),
     doubles = require('./../helpers/doubles'),
     busModule = require('../../lib/internal/bus'),
-    feeds = require('../../lib/internal/feeds'),
     plugins = require('../../lib/internal/plugins'),
     chi = require('../../lib/chi');
 
@@ -19,7 +18,6 @@ describe("The module chi can be extended with plugins:", function () {
       plugin = doubles.stubFunction();
       feedFactory = doubles.stubFunction();
 
-      doubles.stubFeedsModule(feeds);
       doubles.stubPluginsModule(plugins);
 
       plugins.feedFactoryForPlugin.returns(feedFactory);
@@ -28,7 +26,6 @@ describe("The module chi can be extended with plugins:", function () {
     });
 
     afterEach(function () {
-      feeds.restoreOriginal();
       plugins.restoreOriginal();
     });
 
@@ -40,11 +37,6 @@ describe("The module chi can be extended with plugins:", function () {
     it("will ask the plugins module for a feed factory", function () {
       expect(plugins.feedFactoryForPlugin.calledOnce).to.be.ok();
       expect(plugins.feedFactoryForPlugin.calledWithExactly(name)).to.be.ok();
-    });
-
-    it("will register the feed factory in the feeds module as a plugin", function () {
-      expect(feeds.registerPlugin.calledOnce).to.be.ok();
-      expect(feeds.registerPlugin.calledWithExactly(name, feedFactory)).to.be.ok();
     });
 
     it("a factory method with the same name that the plugin will be available in chi", function () {

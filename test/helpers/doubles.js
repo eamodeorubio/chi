@@ -15,8 +15,8 @@ module.exports = {
   makeFeedFactoriesRegistry:function (optName) {
     return this.double(['factoryFor', 'registerFactoryFor', 'decorateWithPlugins'], optName ? optName : "<anonymous feed factories registry>");
   },
-  makeStateFactoriesRegistry:function (optName) {
-    return this.double(['registerFactoryFor', 'makeStateFor'], optName ? optName : "<anonymous state factories registry>");
+  makeStateFactory:function (optName) {
+    return this.double(['registerPlugin', 'makeStateFor'], optName ? optName : "<anonymous state factory>");
   },
   makePluginScope:function (optName) {
     return this.double(['registerPlugin', 'feedFactoryForPlugin'], optName ? optName : "<anonymous plugin scope>");
@@ -25,7 +25,7 @@ module.exports = {
     this.stubModule(busModule, ['emitter', 'storage']);
   },
   stubRegistryModule:function (registry) {
-    this.stubModule(registry, ['feedFactoriesRegistry','stateFactoriesRegistry']);
+    this.stubModule(registry, ['feedFactoriesRegistry','stateFactory']);
   },
   stubPluginsModule:function (plugins) {
     this.stubModule(plugins, ['scope']);

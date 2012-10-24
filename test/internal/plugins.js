@@ -7,14 +7,14 @@ var expect = require('expect.js'),
     pluginsModule = require('../../lib/internal/plugins');
 
 describe('A PluginScope:', function () {
-  var factoriesRegistry, pluginsRegistry, pluginScope;
+  var factoriesRegistry, stateFactory, pluginScope;
   beforeEach(function () {
     doubles.stubFeedsModule(feeds);
     doubles.stubRegistryModule(registry);
     factoriesRegistry = doubles.makeFeedFactoriesRegistry();
-    pluginsRegistry = doubles.makeStateFactoriesRegistry();
+    stateFactory = doubles.makeStateFactory();
     registry.feedFactoriesRegistry.returns(factoriesRegistry);
-    registry.stateFactoriesRegistry.returns(pluginsRegistry);
+    registry.stateFactory.returns(stateFactory);
 
     pluginScope = pluginsModule.scope();
   });
@@ -28,14 +28,14 @@ describe('A PluginScope:', function () {
     expect(pluginScope.registerPlugin).to.be.a('function');
   });
 
-  it("registerPlugin() will delegate to pluginsRegistry.registerFactoryFor", function () {
+  it("registerPlugin() will delegate to stateFactory.registerPlugin", function () {
     var name = 'plug name', plugin = doubles.stubFunction();
 
     pluginScope.registerPlugin(name, plugin);
 
-    expect(pluginsRegistry.registerFactoryFor.calledOnce).to.be.ok();
-    expect(pluginsRegistry.registerFactoryFor.calledOn(pluginsRegistry)).to.be.ok();
-    expect(pluginsRegistry.registerFactoryFor.calledWithExactly(name, plugin)).to.be.ok();
+    expect(stateFactory.registerPlugin.calledOnce).to.be.ok();
+    expect(stateFactory.registerPlugin.calledOn(stateFactory)).to.be.ok();
+    expect(stateFactory.registerPlugin.calledWithExactly(name, plugin)).to.be.ok();
   });
 
   describe("given a plugin has been registered,", function () {
@@ -89,16 +89,16 @@ describe('A PluginScope:', function () {
           state='initial state';
           options = ['a', 'b', 'c'];
 
-          pluginsRegistry.makeStateFor.returns(state);
+          stateFactory.makeStateFor.returns(state);
           factoriesRegistry.decorateWithPlugins.returns(expectedResultingFeed);
 
           aFeed = pluginScope.feedFactoryForPlugin(name)(bus, options);
         });
 
         it("will ask pluginsRegistry for a state factory with the options and the plugin name to create a state factory", function () {
-          expect(pluginsRegistry.makeStateFor.calledOnce).to.be.ok();
-          expect(pluginsRegistry.makeStateFor.calledOn(pluginsRegistry)).to.be.ok();
-          expect(pluginsRegistry.makeStateFor.calledWithExactly(name, bus.publish, options)).to.be.ok();
+          expect(stateFactory.makeStateFor.calledOnce).to.be.ok();
+          expect(stateFactory.makeStateFor.calledOn(stateFactory)).to.be.ok();
+          expect(stateFactory.makeStateFor.calledWithExactly(name, bus.publish, options)).to.be.ok();
         });
 
         it("will call the feeds module with the bus factory and the state factory to create a feed", function () {

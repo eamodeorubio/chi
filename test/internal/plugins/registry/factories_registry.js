@@ -1,8 +1,8 @@
 "use strict";
 
 var expect = require('expect.js'),
-    doubles = require('../../helpers/doubles'),
-    registry = require('../../../lib/internal/plugins/registry');
+    doubles = require('../../../helpers/doubles'),
+    registry = require('../../../../lib/internal/plugins/registry');
 
 describe('The module internal/plugins/registry:', function () {
   it("exports a factoriesRegistry function", function () {

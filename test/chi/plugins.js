@@ -25,7 +25,7 @@ describe("A chi instance can be extended with plugins:", function () {
     expect(chi.registerPlugin).to.be.a('function');
   });
 
-  describe("given registerPlugin() has been called with a name and a function,", function () {
+  describe("given registerPlugin() has been called with a name and a function, it", function () {
     var name, plugin, feedFactory;
     beforeEach(function () {
       name = "plugme";
@@ -36,8 +36,6 @@ describe("A chi instance can be extended with plugins:", function () {
 
       chi.registerPlugin(name, plugin);
     });
-
-
 
     it("will register the plugin in the states module", function () {
       expect(plugins.registerPlugin.calledOnce).to.be.ok();

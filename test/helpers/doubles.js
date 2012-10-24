@@ -18,8 +18,8 @@ module.exports = {
   makeStateFactory:function (optName) {
     return this.double(['registerPlugin', 'makeStateFor'], optName ? optName : "<anonymous state factory>");
   },
-  makePluginScope:function (optName) {
-    return this.double(['registerPlugin', 'feedFactoryForPlugin'], optName ? optName : "<anonymous plugin scope>");
+  makeFeedFactory:function (optName) {
+    return this.double(['registerPlugin', 'makeFeedFor'], optName ? optName : "<anonymous feed factory>");
   },
   stubBusModule:function (busModule) {
     this.stubModule(busModule, ['emitter', 'storage']);
@@ -28,7 +28,7 @@ module.exports = {
     this.stubModule(registry, ['feedFactoriesRegistry','stateFactory']);
   },
   stubPluginsModule:function (plugins) {
-    this.stubModule(plugins, ['scope']);
+    this.stubModule(plugins, ['feedFactory']);
   },
   stubFeedsModule:function (feeds) {
     this.stubModule(feeds, ['feed', 'isFeed']);

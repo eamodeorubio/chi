@@ -6,8 +6,8 @@ var expect = require('expect.js'),
     feeds = require('../../lib/internal/feeds'),
     pluginsModule = require('../../lib/internal/plugins');
 
-describe('A PluginScope:', function () {
-  var factoriesRegistry, stateFactory, pluginScope;
+describe('A FeedFactory:', function () {
+  var factoriesRegistry, stateFactory, feedFactory;
   beforeEach(function () {
     doubles.stubFeedsModule(feeds);
     doubles.stubRegistryModule(registry);
@@ -16,7 +16,7 @@ describe('A PluginScope:', function () {
     registry.feedFactoriesRegistry.returns(factoriesRegistry);
     registry.stateFactory.returns(stateFactory);
 
-    pluginScope = pluginsModule.scope();
+    feedFactory = pluginsModule.feedFactory();
   });
 
   afterEach(function () {
@@ -25,13 +25,13 @@ describe('A PluginScope:', function () {
   });
 
   it("has a registerPlugin function", function () {
-    expect(pluginScope.registerPlugin).to.be.a('function');
+    expect(feedFactory.registerPlugin).to.be.a('function');
   });
 
   it("registerPlugin() will delegate to stateFactory.registerPlugin", function () {
     var name = 'plug name', plugin = doubles.stubFunction();
 
-    pluginScope.registerPlugin(name, plugin);
+    feedFactory.registerPlugin(name, plugin);
 
     expect(stateFactory.registerPlugin.calledOnce).to.be.ok();
     expect(stateFactory.registerPlugin.calledOn(stateFactory)).to.be.ok();
@@ -39,80 +39,88 @@ describe('A PluginScope:', function () {
   });
 
   describe("given a plugin has been registered,", function () {
-    var name, plugin, options;
+    var name, plugin, options, bus;
     beforeEach(function () {
       name = 'some plugin';
       options = ['x', 'y', 'z'];
+      bus = doubles.makeBus();
       plugin = doubles.stubFunction();
 
-      pluginScope.registerPlugin(name, plugin);
+      feedFactory.registerPlugin(name, plugin);
     });
 
-    describe("feedFactoryForPlugin():", function () {
-      it('given the factory has been registered before, it will return the function returned by the factories registry', function () {
-        var aFactory = doubles.stubFunction();
-        factoriesRegistry.factoryFor.returns(aFactory);
-
-        var result = pluginScope.feedFactoryForPlugin(name);
+    describe("makeFeedFor():", function () {
+      it('will ask the factories registry for a feed factory for the plugin', function () {
+        feedFactory.makeFeedFor(name, bus, options);
 
         expect(factoriesRegistry.factoryFor.calledOnce).to.be.ok();
         expect(factoriesRegistry.factoryFor.calledWithExactly(name)).to.be.ok();
-        expect(result).to.be(aFactory);
+      });
+
+      describe('given the factory has been registered before, when called it will', function () {
+        var result, factory, aFeed;
+        beforeEach(function () {
+          aFeed = 'expected feed';
+          factory = doubles.stubFunction();
+          factory.returns(aFeed);
+          factoriesRegistry.factoryFor.returns(factory);
+
+          result = feedFactory.makeFeedFor(name, bus, options);
+        });
+
+        it('ask the found factory to make a new feed with the bus and the options', function () {
+          expect(factory.calledOnce).to.be.ok();
+          expect(factory.calledWithExactly(bus, options)).to.be.ok();
+        });
+
+        it('return the new constructed feed', function () {
+          expect(result).to.be(aFeed);
+        });
       });
 
       describe('given it is the first time we ask for the factory, when called it will', function () {
-        var result;
+        var result, expectedResultingFeed, state;
 
         beforeEach(function () {
           factoriesRegistry.factoryFor.returns(undefined);
 
-          result = pluginScope.feedFactoryForPlugin(name);
-        });
+          state = 'initial state';
+          stateFactory.makeStateFor.returns(state);
 
-        it('return a function', function () {
-          expect(result).to.be.a('function');
-        });
-
-        it('register the returned function as a feed factory', function () {
-          expect(factoriesRegistry.registerFactoryFor.calledOnce).to.be.ok();
-          expect(factoriesRegistry.registerFactoryFor.calledOn(factoriesRegistry)).to.be.ok();
-          expect(factoriesRegistry.registerFactoryFor.calledWithExactly(name, result)).to.be.ok();
-        });
-      });
-
-      describe("the returned function is a feed factory, and when called with a bus and some options", function () {
-        var options, aFeed, state, expectedResultingFeed, bus;
-        beforeEach(function () {
           expectedResultingFeed = doubles.double(['chain']);
           feeds.feed.returns(expectedResultingFeed);
-          bus = doubles.makeBus();
-          state='initial state';
-          options = ['a', 'b', 'c'];
-
-          stateFactory.makeStateFor.returns(state);
           factoriesRegistry.decorateWithPlugins.returns(expectedResultingFeed);
 
-          aFeed = pluginScope.feedFactoryForPlugin(name)(bus, options);
+          result = feedFactory.makeFeedFor(name, bus, options);
         });
 
-        it("will ask pluginsRegistry for a state factory with the options and the plugin name to create a state factory", function () {
-          expect(stateFactory.makeStateFor.calledOnce).to.be.ok();
-          expect(stateFactory.makeStateFor.calledOn(stateFactory)).to.be.ok();
-          expect(stateFactory.makeStateFor.calledWithExactly(name, bus.publish, options)).to.be.ok();
+        it('register a new function as a feed factory', function () {
+          expect(factoriesRegistry.registerFactoryFor.calledOnce).to.be.ok();
+          expect(factoriesRegistry.registerFactoryFor.calledOn(factoriesRegistry)).to.be.ok();
+          expect(factoriesRegistry.registerFactoryFor.lastCall.args[0]).to.be(name);
+          expect(factoriesRegistry.registerFactoryFor.lastCall.args[1]).to.be.a('function');
         });
 
-        it("will call the feeds module with the bus factory and the state factory to create a feed", function () {
-          expect(feeds.feed.calledOnce).to.be.ok();
-          expect(feeds.feed.calledWithExactly(bus, state)).to.be.ok();
+        describe("will invoke the new registered factory to create a new feed, and the factory will", function () {
+          it("ask the state factory to create a new initial state", function () {
+            expect(stateFactory.makeStateFor.calledOnce).to.be.ok();
+            expect(stateFactory.makeStateFor.calledOn(stateFactory)).to.be.ok();
+            expect(stateFactory.makeStateFor.calledWithExactly(name, bus.publish, options)).to.be.ok();
+          });
+
+          it("call the feeds module with the bus and initial state to create a feed", function () {
+            expect(feeds.feed.calledOnce).to.be.ok();
+            expect(feeds.feed.calledWithExactly(bus, state)).to.be.ok();
+          });
+
+          it("decorate the new feed with plugins", function () {
+            expect(factoriesRegistry.decorateWithPlugins.calledOnce).to.be.ok();
+            expect(factoriesRegistry.decorateWithPlugins.calledWithExactly(result, bus)).to.be.ok();
+          });
         });
 
-        it("will return the resulting feed", function () {
-          expect(aFeed).to.be(expectedResultingFeed);
-        });
-
-        it("the result will be decorated with plugins", function () {
-          expect(factoriesRegistry.decorateWithPlugins.calledOnce).to.be.ok();
-          expect(factoriesRegistry.decorateWithPlugins.calledWithExactly(aFeed, bus)).to.be.ok();
+        it("the new created feed will be returned", function () {
+          expect(result).to.be(expectedResultingFeed);
         });
       });
     });

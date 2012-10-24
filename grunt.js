@@ -42,6 +42,7 @@ module.exports = function (grunt) {
         plusplus:false,
         undef:true,
         unused:true,
+        white:false,
         strict:true,
         trailing:true,
         maxparams:3,

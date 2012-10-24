@@ -11,6 +11,7 @@ describe("A chi instance can be extended with plugins:", function () {
   beforeEach(function () {
     plugins = doubles.makePluginScope();
 
+    doubles.stubBusModule(busModule);
     doubles.stubPluginsModule(pluginsModule);
     pluginsModule.scope.returns(plugins);
 
@@ -19,6 +20,7 @@ describe("A chi instance can be extended with plugins:", function () {
 
   afterEach(function () {
     pluginsModule.restoreOriginal();
+    busModule.restoreOriginal();
   });
 
   it("has a registerPlugin function", function () {
@@ -26,11 +28,16 @@ describe("A chi instance can be extended with plugins:", function () {
   });
 
   describe("given registerPlugin() has been called with a name and a function, it", function () {
-    var name, plugin, feedFactory;
+    var name, plugin, feedFactory, emitter, storage;
     beforeEach(function () {
       name = "plugme";
+      emitter='an emitter bus';
+      storage='an storage bus';
       plugin = doubles.stubFunction();
       feedFactory = doubles.stubFunction();
+
+      busModule.emitter.returns(emitter);
+      busModule.storage.returns(storage);
 
       plugins.feedFactoryForPlugin.returns(feedFactory);
 
@@ -67,39 +74,44 @@ describe("A chi instance can be extended with plugins:", function () {
         expect(result).to.be(expectedResult);
       });
 
-      it("without parameters, it will create a feed with busModule.emitter and a state factory created with the plugin name and an empty array", function () {
+      it("without parameters, it will create a feed with an emitter and a state factory created with the plugin name and an empty array", function () {
         chi[name]();
 
         expect(feedFactory.calledOnce).to.be.ok();
-        expect(feedFactory.calledWithExactly(busModule.emitter, [])).to.be.ok();
+        expect(busModule.emitter.calledOnce).to.be.ok();
+        expect(feedFactory.calledWithExactly(emitter, [])).to.be.ok();
       });
 
-      it("with false as a parameter, it will create a feed with busModule.emitter and a state factory created with the plugin name and an empty array", function () {
+      it("with false as a parameter, it will create a feed with an emitter and a state factory created with the plugin name and an empty array", function () {
         chi[name](false);
 
         expect(feedFactory.calledOnce).to.be.ok();
-        expect(feedFactory.calledWithExactly(busModule.emitter, [])).to.be.ok();
+        expect(busModule.emitter.calledOnce).to.be.ok();
+        expect(feedFactory.calledWithExactly(emitter, [])).to.be.ok();
       });
 
-      it("with true as a parameter, it will create a feed with busModule.storage and a state factory created with the plugin name and an empty array", function () {
+      it("with true as a parameter, it will create a feed with a storage and a state factory created with the plugin name and an empty array", function () {
         chi[name](true);
 
         expect(feedFactory.calledOnce).to.be.ok();
-        expect(feedFactory.calledWithExactly(busModule.storage, [])).to.be.ok();
+        expect(busModule.storage.calledOnce).to.be.ok();
+        expect(feedFactory.calledWithExactly(storage, [])).to.be.ok();
       });
 
-      it("with true and more parameters, it will create a feed with busModule.storage and a state factory created with the plugin name and an array with the extra parameters", function () {
+      it("with true and more parameters, it will create a feed with a storage and a state factory created with the plugin name and an array with the extra parameters", function () {
         chi[name](true, '', 0);
 
         expect(feedFactory.calledOnce).to.be.ok();
-        expect(feedFactory.calledWithExactly(busModule.storage, ['', 0])).to.be.ok();
+        expect(busModule.storage.calledOnce).to.be.ok();
+        expect(feedFactory.calledWithExactly(storage, ['', 0])).to.be.ok();
       });
 
-      it("with a first argument that is not a boolean, it will create a feed with busModule.emitter and a state factory created with the plugin name and an array with all parameters", function () {
+      it("with a first argument that is not a boolean, it will create a feed with an emitter and a state factory created with the plugin name and an array with all parameters", function () {
         chi[name](1);
 
         expect(feedFactory.calledOnce).to.be.ok();
-        expect(feedFactory.calledWithExactly(busModule.emitter, [1])).to.be.ok();
+        expect(busModule.emitter.calledOnce).to.be.ok();
+        expect(feedFactory.calledWithExactly(emitter, [1])).to.be.ok();
       });
     });
   });

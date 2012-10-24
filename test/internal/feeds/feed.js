@@ -4,13 +4,11 @@ var expect = require('expect.js'),
     doubles = require('../../helpers/doubles'),
     feeds = require('../../../lib/internal/feeds');
 
-describe('Given a Feed created with a bus factory and state factory,', function () {
-  var feed, bus, initialState, isFeed, makeBus, makeState;
+describe('Given a Feed created with a bus and state factory,', function () {
+  var feed, bus, initialState, isFeed, makeState;
 
   beforeEach(function () {
     bus = doubles.makeBus();
-    makeBus = doubles.stubFunction();
-    makeBus.returns(bus);
 
     initialState = doubles.makeFeedState();
     makeState = doubles.stubFunction();
@@ -18,11 +16,7 @@ describe('Given a Feed created with a bus factory and state factory,', function 
 
     isFeed = doubles.stubFunction();
 
-    feed = feeds.feed(makeBus, makeState, isFeed);
-  });
-
-  it("the feed will call makeBus to create a new bus", function () {
-    expect(makeBus.calledOnce).to.be.ok();
+    feed = feeds.feed(bus, makeState, isFeed);
   });
 
   it("the feed will call makeState to create an initial state", function () {

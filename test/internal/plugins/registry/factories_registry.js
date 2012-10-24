@@ -34,12 +34,12 @@ describe('The module internal/plugins/registry:', function () {
       });
 
       describe("decorateWithPlugins when called with a chainable object and a bus factory:", function () {
-        var aChainable, makeBus;
+        var aChainable, bus;
         beforeEach(function () {
           aChainable = doubles.double(['chain']);
-          makeBus = doubles.stubFunction();
+          bus = 'a bus';
 
-          aRegistry.decorateWithPlugins(aChainable, makeBus);
+          aRegistry.decorateWithPlugins(aChainable, bus);
         });
 
         it("the result will have a method with the same name that the plugin", function () {
@@ -62,7 +62,7 @@ describe('The module internal/plugins/registry:', function () {
 
           it("will ask the factory to create a new feed with the bus factory and the arguments", function () {
             expect(factory.calledOnce).to.be.ok();
-            expect(factory.calledWithExactly(makeBus, [arg1, arg2])).to.be.ok();
+            expect(factory.calledWithExactly(bus, [arg1, arg2])).to.be.ok();
           });
 
           it("will call chain on the chainable using with the feed created by the factory", function () {

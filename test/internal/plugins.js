@@ -80,19 +80,19 @@ describe('A PluginScope:', function () {
         });
       });
 
-      describe("the returned function is a feed factory, and when called with a bus factory and some options", function () {
-        var makeBus, options, aFeed, makeState, expectedResultingFeed;
+      describe("the returned function is a feed factory, and when called with a bus and some options", function () {
+        var options, aFeed, makeState, expectedResultingFeed, bus;
         beforeEach(function () {
           expectedResultingFeed = doubles.double(['chain']);
           feeds.feed.returns(expectedResultingFeed);
-          makeBus = doubles.stubFunction();
+          bus = 'a bus';
           makeState = doubles.stubFunction();
           options = ['a', 'b', 'c'];
 
           pluginsRegistry.factoryFor.returns(makeState);
           factoriesRegistry.decorateWithPlugins.returns(expectedResultingFeed);
 
-          aFeed = pluginScope.feedFactoryForPlugin(name)(makeBus, options);
+          aFeed = pluginScope.feedFactoryForPlugin(name)(bus, options);
         });
 
         it("will ask pluginsRegistry for a state factory with the options and the plugin name to create a state factory", function () {
@@ -103,7 +103,7 @@ describe('A PluginScope:', function () {
 
         it("will call the feeds module with the bus factory and the state factory to create a feed", function () {
           expect(feeds.feed.calledOnce).to.be.ok();
-          expect(feeds.feed.calledWithExactly(makeBus, makeState)).to.be.ok();
+          expect(feeds.feed.calledWithExactly(bus, makeState)).to.be.ok();
         });
 
         it("will return the resulting feed", function () {
@@ -112,7 +112,7 @@ describe('A PluginScope:', function () {
 
         it("the result will be decorated with plugins", function () {
           expect(factoriesRegistry.decorateWithPlugins.calledOnce).to.be.ok();
-          expect(factoriesRegistry.decorateWithPlugins.calledWithExactly(aFeed, makeBus)).to.be.ok();
+          expect(factoriesRegistry.decorateWithPlugins.calledWithExactly(aFeed, bus)).to.be.ok();
         });
       });
     });

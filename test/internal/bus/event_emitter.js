@@ -79,8 +79,8 @@ describe('An event emitter,', function () {
 
         it('will call the publication() on all subscriptors exactly one time', function () {
           expect(publication.calledTwice).to.be.ok();
-          expect(publication.firstCall.calledWithExactly(subscriber1)).to.be.ok();
-          expect(publication.secondCall.calledWithExactly(subscriber2)).to.be.ok();
+          expect(publication.firstCall.calledWith(subscriber1)).to.be.ok();
+          expect(publication.secondCall.calledWith(subscriber2)).to.be.ok();
         });
       });
     });
@@ -102,7 +102,7 @@ describe('An event emitter,', function () {
 
       it('when publishing an event, it will still make the publication only once', function () {
         expect(publication.calledOnce).to.be.ok();
-        expect(publication.firstCall.calledWithExactly(subscriber)).to.be.ok();
+        expect(publication.firstCall.calledWith(subscriber)).to.be.ok();
       });
     });
   });

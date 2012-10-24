@@ -67,7 +67,7 @@ describe('An EventStorage,', function () {
     });
   });
 
-  describe('remembers past publications and will notify them to new subscribers', function () {
+  describe('remembers past publications and will notify them to new subscribers:', function () {
     describe('given that several events has been published,', function () {
       var publications;
       beforeEach(function () {

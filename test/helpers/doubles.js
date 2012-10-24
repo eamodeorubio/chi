@@ -2,6 +2,12 @@
 
 var sinon = require('sinon');
 
+function methodsOf(obj) {
+  return Object.keys(obj).filter(function (name) {
+    return typeof obj[name] === 'function';
+  });
+}
+
 module.exports = {
   makeFeed:function (optName) {
     return this.double(['yields', 'throws', 'done', 'chain'], optName ? optName : "<anonymous feed>");
@@ -21,30 +27,19 @@ module.exports = {
   makeFeedFactory:function (optName) {
     return this.double(['registerPlugin', 'makeFeedFor'], optName ? optName : "<anonymous feed factory>");
   },
-  stubBusModule:function (busModule) {
-    this.stubModule(busModule, ['emitter', 'storage']);
-  },
-  stubRegistryModule:function (registry) {
-    this.stubModule(registry, ['feedFactoriesRegistry','stateFactory']);
-  },
-  stubPluginsModule:function (plugins) {
-    this.stubModule(plugins, ['feedFactory']);
-  },
-  stubFeedsModule:function (feeds) {
-    this.stubModule(feeds, ['feed', 'isFeed']);
-  },
-  stubFunction:function () {
+  stubFunction:function() {
     return sinon.stub();
   },
-  stubModule:function (module, methods) {
+  stubObject:function (obj) {
+    var methods=methodsOf(obj);
     methods.forEach(function (methodName) {
-      sinon.stub(module, methodName);
+      sinon.stub(obj, methodName);
     });
-    module.restoreOriginal = function () {
+    obj.restoreOriginal = function () {
       methods.forEach(function (methodName) {
-        module[methodName].restore();
+        obj[methodName].restore();
       });
-      delete module.restoreOriginal;
+      delete obj.restoreOriginal;
     };
   },
   "double":function (methodNames, optName) {

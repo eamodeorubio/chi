@@ -11,8 +11,8 @@ describe("A chi instance can be extended with plugins:", function () {
   beforeEach(function () {
     feedFactory = doubles.makeFeedFactory();
 
-    doubles.stubBusModule(busModule);
-    doubles.stubPluginsModule(pluginsModule);
+    doubles.stubObject(busModule);
+    doubles.stubObject(pluginsModule);
     pluginsModule.feedFactory.returns(feedFactory);
 
     chi = chiModule.make();

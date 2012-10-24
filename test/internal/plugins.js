@@ -9,10 +9,12 @@ var expect = require('expect.js'),
 describe('A FeedFactory:', function () {
   var factoriesRegistry, stateFactory, feedFactory;
   beforeEach(function () {
-    doubles.stubFeedsModule(feeds);
-    doubles.stubRegistryModule(registry);
+    doubles.stubObject(feeds);
+    doubles.stubObject(registry);
+
     factoriesRegistry = doubles.makeFeedFactoriesRegistry();
     stateFactory = doubles.makeStateFactory();
+
     registry.feedFactoriesRegistry.returns(factoriesRegistry);
     registry.stateFactory.returns(stateFactory);
 

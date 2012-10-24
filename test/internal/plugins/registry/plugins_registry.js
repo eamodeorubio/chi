@@ -5,18 +5,18 @@ var expect = require('expect.js'),
     registry = require('../../../../lib/internal/plugins/registry');
 
 describe('The module internal/plugins/registry:', function () {
-  it("exports a pluginsRegistry function", function () {
-    expect(registry.pluginsRegistry).to.be.a('function');
+  it("exports a stateFactoriesRegistry function", function () {
+    expect(registry.stateFactoriesRegistry).to.be.a('function');
   });
 
   describe("Given a registry has been constructed using the exported function", function () {
     var aRegistry;
     beforeEach(function () {
-      aRegistry = registry.pluginsRegistry();
+      aRegistry = registry.stateFactoriesRegistry();
     });
 
-    it("it has a registerPlugin function", function () {
-      expect(aRegistry.registerPlugin).to.be.a('function');
+    it("it has a registerFactoryFor function", function () {
+      expect(aRegistry.registerFactoryFor).to.be.a('function');
     });
 
     describe("given a plugin has been registered,", function () {
@@ -26,7 +26,7 @@ describe('The module internal/plugins/registry:', function () {
         options = ['x', 'y', 'z'];
         plugin = doubles.stubFunction();
 
-        aRegistry.registerPlugin(name, plugin);
+        aRegistry.registerFactoryFor(name, plugin);
       });
 
       describe('factoryFor():', function () {

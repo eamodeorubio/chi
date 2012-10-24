@@ -11,10 +11,10 @@ describe('A PluginScope:', function () {
   beforeEach(function () {
     doubles.stubFeedsModule(feeds);
     doubles.stubRegistryModule(registry);
-    factoriesRegistry = doubles.makeFactoriesRegistry();
-    pluginsRegistry = doubles.makePluginsRegistry();
-    registry.factoriesRegistry.returns(factoriesRegistry);
-    registry.pluginsRegistry.returns(pluginsRegistry);
+    factoriesRegistry = doubles.makeFeedFactoriesRegistry();
+    pluginsRegistry = doubles.makeStateFactoriesRegistry();
+    registry.feedFactoriesRegistry.returns(factoriesRegistry);
+    registry.stateFactoriesRegistry.returns(pluginsRegistry);
 
     pluginScope = pluginsModule.scope();
   });
@@ -28,14 +28,14 @@ describe('A PluginScope:', function () {
     expect(pluginScope.registerPlugin).to.be.a('function');
   });
 
-  it("registerPlugin() will delegate to pluginsRegistry.registerPlugin", function () {
+  it("registerPlugin() will delegate to pluginsRegistry.registerFactoryFor", function () {
     var name = 'plug name', plugin = doubles.stubFunction();
 
     pluginScope.registerPlugin(name, plugin);
 
-    expect(pluginsRegistry.registerPlugin.calledOnce).to.be.ok();
-    expect(pluginsRegistry.registerPlugin.calledOn(pluginsRegistry)).to.be.ok();
-    expect(pluginsRegistry.registerPlugin.calledWithExactly(name, plugin)).to.be.ok();
+    expect(pluginsRegistry.registerFactoryFor.calledOnce).to.be.ok();
+    expect(pluginsRegistry.registerFactoryFor.calledOn(pluginsRegistry)).to.be.ok();
+    expect(pluginsRegistry.registerFactoryFor.calledWithExactly(name, plugin)).to.be.ok();
   });
 
   describe("given a plugin has been registered,", function () {

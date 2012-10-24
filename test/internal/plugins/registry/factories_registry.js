@@ -5,14 +5,14 @@ var expect = require('expect.js'),
     registry = require('../../../../lib/internal/plugins/registry');
 
 describe('The module internal/plugins/registry:', function () {
-  it("exports a factoriesRegistry function", function () {
-    expect(registry.factoriesRegistry).to.be.a('function');
+  it("exports a feedFactoriesRegistry function", function () {
+    expect(registry.feedFactoriesRegistry).to.be.a('function');
   });
 
   describe("Given a registry has been constructed using the exported function", function () {
     var aRegistry;
     beforeEach(function () {
-      aRegistry = registry.factoriesRegistry();
+      aRegistry = registry.feedFactoriesRegistry();
     });
 
     it("it has a registerFactoryFor function", function () {

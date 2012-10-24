@@ -12,11 +12,11 @@ module.exports = {
   makeBus:function (optName) {
     return this.double(['subscribe', 'publish'], optName ? optName : "<anonymous bus>");
   },
-  makeFactoriesRegistry:function (optName) {
-    return this.double(['factoryFor', 'registerFactoryFor', 'decorateWithPlugins'], optName ? optName : "<anonymous factory registry>");
+  makeFeedFactoriesRegistry:function (optName) {
+    return this.double(['factoryFor', 'registerFactoryFor', 'decorateWithPlugins'], optName ? optName : "<anonymous feed factories registry>");
   },
-  makePluginsRegistry:function (optName) {
-    return this.double(['factoryFor', 'registerPlugin'], optName ? optName : "<anonymous plugins registry>");
+  makeStateFactoriesRegistry:function (optName) {
+    return this.double(['factoryFor', 'registerFactoryFor'], optName ? optName : "<anonymous state factories registry>");
   },
   makePluginScope:function (optName) {
     return this.double(['registerPlugin', 'feedFactoryForPlugin'], optName ? optName : "<anonymous plugin scope>");
@@ -25,7 +25,7 @@ module.exports = {
     this.stubModule(busModule, ['emitter', 'storage']);
   },
   stubRegistryModule:function (registry) {
-    this.stubModule(registry, ['factoriesRegistry','pluginsRegistry']);
+    this.stubModule(registry, ['feedFactoriesRegistry','stateFactoriesRegistry']);
   },
   stubPluginsModule:function (plugins) {
     this.stubModule(plugins, ['scope']);

@@ -16,7 +16,7 @@ module.exports = {
     return this.double(['factoryFor', 'registerFactoryFor', 'decorateWithPlugins'], optName ? optName : "<anonymous feed factories registry>");
   },
   makeStateFactoriesRegistry:function (optName) {
-    return this.double(['factoryFor', 'registerFactoryFor'], optName ? optName : "<anonymous state factories registry>");
+    return this.double(['registerFactoryFor', 'makeStateFor'], optName ? optName : "<anonymous state factories registry>");
   },
   makePluginScope:function (optName) {
     return this.double(['registerPlugin', 'feedFactoryForPlugin'], optName ? optName : "<anonymous plugin scope>");

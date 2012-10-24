@@ -20,35 +20,34 @@ describe('The module internal/plugins/registry:', function () {
     });
 
     describe("given a plugin has been registered,", function () {
-      var name, plugin, options;
+      var name, plugin;
       beforeEach(function () {
         name = 'some plugin';
-        options = ['x', 'y', 'z'];
+
         plugin = doubles.stubFunction();
 
         aRegistry.registerFactoryFor(name, plugin);
       });
 
-      describe('factoryFor():', function () {
-        it("when called with the plugin name and some options, it will return a function", function () {
-          expect(aRegistry.factoryFor(name, options)).to.be.a('function');
+      describe('makeStateFor():', function () {
+        var options, output;
+        beforeEach(function() {
+          options = ['x', 'y', 'z'];
+          output='some output';
         });
 
         it("when called with a non existent plugin name, it will return undefined", function () {
-          expect(aRegistry.factoryFor('not exists', options)).to.be(undefined);
+          expect(aRegistry.makeStateFor('not exists', output, options)).to.be(undefined);
         });
 
-        describe('given it has been called with the plugin name and some options, the returned function', function () {
-          var factory, output, expectedResult, result;
+        describe('when called with an existing plugin name and some output and options, it will', function () {
+          var result, output, expectedResult;
 
           beforeEach(function () {
-            output = 'original output';
             expectedResult = {};
             plugin.returns(expectedResult);
 
-            factory = aRegistry.factoryFor(name, options);
-
-            result = factory(output);
+            result = aRegistry.makeStateFor(name, output, options);
           });
 
           it("call the specified plugin once", function () {

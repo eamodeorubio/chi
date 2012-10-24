@@ -30,12 +30,16 @@ describe('An EventStorage,', function () {
       expect(emitter.subscribe.calledWithExactly(subscriber)).to.be.ok();
     });
 
-    it('subscribe() will return the result of emitter.subscribe()', function () {
-      var subscriber = {}, expectedResult = 'expected result';
+    it('subscribe() will return truthy if emitter.subscribe() is truthy', function () {
+      emitter.subscribe.returns('ok');
 
-      emitter.subscribe.returns(expectedResult);
+      expect(storage.subscribe({})).to.be.ok();
+    });
 
-      expect(storage.subscribe(subscriber)).to.be(expectedResult);
+    it('subscribe() will return falsy if emitter.subscribe() is falsy', function () {
+      emitter.subscribe.returns('');
+
+      expect(storage.subscribe({})).not.to.be.ok();
     });
   });
 

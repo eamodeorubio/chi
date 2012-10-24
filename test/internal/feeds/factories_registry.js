@@ -2,7 +2,7 @@
 
 var expect = require('expect.js'),
     doubles = require('../../helpers/doubles'),
-    registry = require('../../../lib/internal/plugins/feed_factory_registry');
+    registry = require('../../../lib/internal/feeds/feed_factory_registry');
 
 describe('The module internal/plugins/feed_factory_registry:', function () {
   it("exports a feedFactoriesRegistry function", function () {

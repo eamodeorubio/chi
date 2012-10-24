@@ -2,7 +2,7 @@
 
 var expect = require('expect.js'),
     doubles = require('../../helpers/doubles'),
-    registry = require('../../../lib/internal/plugins/state_factory');
+    registry = require('../../../lib/internal/states/state_factory');
 
 describe('The module internal/plugins/state_factory:', function () {
   it("exports a stateFactory function", function () {

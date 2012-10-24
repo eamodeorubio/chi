@@ -2,7 +2,7 @@
 
 var expect = require('expect.js'),
     doubles = require('../../helpers/doubles'),
-    success = require('../../../lib/internal/plugins/success');
+    success = require('../../../lib/internal/states/success');
 
 describe('The internal/plugins/success module:', function () {
   var chi;

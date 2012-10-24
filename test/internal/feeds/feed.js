@@ -2,7 +2,7 @@
 
 var expect = require('expect.js'),
     doubles = require('../../helpers/doubles'),
-    feeds = require('../../../lib/internal/feeds');
+    feeds = require('../../../lib/internal/feeds/feed');
 
 describe('Given a Feed created with a bus and state factory,', function () {
   var feed, bus, initialState, isFeed;

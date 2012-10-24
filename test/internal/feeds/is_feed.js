@@ -2,7 +2,7 @@
 
 var expect = require('expect.js'),
     doubles = require('../../helpers/doubles'),
-    feeds = require('../../../lib/internal/feeds');
+    feeds = require('../../../lib/internal/feeds/feed');
 
 describe('isFeed():', function () {
   it('a null is not a feed', function () {

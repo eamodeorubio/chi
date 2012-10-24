@@ -3,7 +3,7 @@
 var expect = require('expect.js'),
     doubles = require('./../helpers/doubles'),
     busModule = require('../../lib/internal/bus'),
-    feedFactoryModule = require('../../lib/internal/plugins/feed_factory.js'),
+    feedFactoryModule = require('../../lib/internal/feeds/feed_factory.js'),
     chiModule = require('../../lib/chi');
 
 describe("A chi instance can be extended with plugins:", function () {

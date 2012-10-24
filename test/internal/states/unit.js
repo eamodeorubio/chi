@@ -2,7 +2,7 @@
 
 var expect = require('expect.js'),
     doubles = require('../../helpers/doubles'),
-    unit = require('../../../lib/internal/plugins/unit');
+    unit = require('../../../lib/internal/states/unit');
 
 describe('The internal/plugins/unit module:', function () {
   var chi;

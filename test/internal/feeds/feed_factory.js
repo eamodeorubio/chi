@@ -2,10 +2,10 @@
 
 var expect = require('expect.js'),
     doubles = require('../../helpers/doubles'),
-    registryModule = require('../../../lib/internal/plugins/feed_factory_registry'),
-    stateFactoryModule = require('../../../lib/internal/plugins/state_factory'),
-    feeds = require('../../../lib/internal/feeds'),
-    feedFactoryModule = require('../../../lib/internal/plugins/feed_factory');
+    registryModule = require('../../../lib/internal/feeds/feed_factory_registry'),
+    stateFactoryModule = require('../../../lib/internal/states/state_factory'),
+    feeds = require('../../../lib/internal/feeds/feed'),
+    feedFactoryModule = require('../../../lib/internal/feeds/feed_factory');
 
 describe('An ExtensibleFeedFactory:', function () {
   var factoriesRegistry, stateFactory, feedFactory;

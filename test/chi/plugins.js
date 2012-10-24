@@ -3,7 +3,7 @@
 var expect = require('expect.js'),
     doubles = require('./../helpers/doubles'),
     busModule = require('../../lib/internal/bus'),
-    pluginsModule = require('../../lib/internal/plugins'),
+    feedFactoryModule = require('../../lib/internal/plugins/feed_factory.js'),
     chiModule = require('../../lib/chi');
 
 describe("A chi instance can be extended with plugins:", function () {
@@ -12,14 +12,14 @@ describe("A chi instance can be extended with plugins:", function () {
     feedFactory = doubles.makeFeedFactory();
 
     doubles.stubObject(busModule);
-    doubles.stubObject(pluginsModule);
-    pluginsModule.feedFactory.returns(feedFactory);
+    doubles.stubObject(feedFactoryModule);
+    feedFactoryModule.feedFactory.returns(feedFactory);
 
     chi = chiModule.make();
   });
 
   afterEach(function () {
-    pluginsModule.restoreOriginal();
+    feedFactoryModule.restoreOriginal();
     busModule.restoreOriginal();
   });
 

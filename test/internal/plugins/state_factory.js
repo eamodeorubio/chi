@@ -1,10 +1,10 @@
 "use strict";
 
 var expect = require('expect.js'),
-    doubles = require('../../../helpers/doubles'),
-    registry = require('../../../../lib/internal/plugins/registry');
+    doubles = require('../../helpers/doubles'),
+    registry = require('../../../lib/internal/plugins/state_factory');
 
-describe('The module internal/plugins/registry:', function () {
+describe('The module internal/plugins/state_factory:', function () {
   it("exports a stateFactory function", function () {
     expect(registry.stateFactory).to.be.a('function');
   });

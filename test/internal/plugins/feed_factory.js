@@ -1,29 +1,32 @@
 "use strict";
 
 var expect = require('expect.js'),
-    doubles = require('../helpers/doubles'),
-    registry = require('../../lib/internal/plugins/registry'),
-    feeds = require('../../lib/internal/feeds'),
-    pluginsModule = require('../../lib/internal/plugins');
+    doubles = require('../../helpers/doubles'),
+    registryModule = require('../../../lib/internal/plugins/feed_factory_registry'),
+    stateFactoryModule = require('../../../lib/internal/plugins/state_factory'),
+    feeds = require('../../../lib/internal/feeds'),
+    feedFactoryModule = require('../../../lib/internal/plugins/feed_factory');
 
-describe('A FeedFactory:', function () {
+describe('An ExtensibleFeedFactory:', function () {
   var factoriesRegistry, stateFactory, feedFactory;
   beforeEach(function () {
     doubles.stubObject(feeds);
-    doubles.stubObject(registry);
+    doubles.stubObject(registryModule);
+    doubles.stubObject(stateFactoryModule);
 
     factoriesRegistry = doubles.makeFeedFactoriesRegistry();
     stateFactory = doubles.makeStateFactory();
 
-    registry.feedFactoriesRegistry.returns(factoriesRegistry);
-    registry.stateFactory.returns(stateFactory);
+    registryModule.feedFactoriesRegistry.returns(factoriesRegistry);
+    stateFactoryModule.stateFactory.returns(stateFactory);
 
-    feedFactory = pluginsModule.feedFactory();
+    feedFactory = feedFactoryModule.feedFactory();
   });
 
   afterEach(function () {
     feeds.restoreOriginal();
-    registry.restoreOriginal();
+    registryModule.restoreOriginal();
+    stateFactoryModule.restoreOriginal();
   });
 
   it("has a registerPlugin function", function () {

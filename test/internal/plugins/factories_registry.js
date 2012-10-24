@@ -1,10 +1,10 @@
 "use strict";
 
 var expect = require('expect.js'),
-    doubles = require('../../../helpers/doubles'),
-    registry = require('../../../../lib/internal/plugins/registry');
+    doubles = require('../../helpers/doubles'),
+    registry = require('../../../lib/internal/plugins/feed_factory_registry');
 
-describe('The module internal/plugins/registry:', function () {
+describe('The module internal/plugins/feed_factory_registry:', function () {
   it("exports a feedFactoriesRegistry function", function () {
     expect(registry.feedFactoriesRegistry).to.be.a('function');
   });

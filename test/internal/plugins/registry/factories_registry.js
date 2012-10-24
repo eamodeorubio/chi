@@ -34,16 +34,20 @@ describe('The module internal/plugins/registry:', function () {
       });
 
       describe("decorateWithPlugins when called with a chainable object and a bus factory:", function () {
-        var aChainable, bus;
+        var chainable, bus, returned;
         beforeEach(function () {
-          aChainable = doubles.double(['chain']);
+          chainable = doubles.double(['chain']);
           bus = 'a bus';
 
-          aRegistry.decorateWithPlugins(aChainable, bus);
+          returned = aRegistry.decorateWithPlugins(chainable, bus);
+        });
+
+        it('the returned value will be the chainable itself', function () {
+          expect(returned).to.be(chainable);
         });
 
         it("the result will have a method with the same name that the plugin", function () {
-          expect(aChainable[name]).to.be.a('function');
+          expect(chainable[name]).to.be.a('function');
         });
 
         describe("when the plugged method is invoked with some arguments,", function () {
@@ -55,9 +59,9 @@ describe('The module internal/plugins/registry:', function () {
             arg2 = "arg2";
 
             factory.returns(aFeed);
-            aChainable.chain.returns(expectedResult);
+            chainable.chain.returns(expectedResult);
 
-            result = aChainable[name](arg1, arg2);
+            result = chainable[name](arg1, arg2);
           });
 
           it("will ask the factory to create a new feed with the bus factory and the arguments", function () {
@@ -66,9 +70,9 @@ describe('The module internal/plugins/registry:', function () {
           });
 
           it("will call chain on the chainable using with the feed created by the factory", function () {
-            expect(aChainable.chain.calledOnce).to.be.ok();
-            expect(aChainable.chain.calledOn(aChainable)).to.be.ok();
-            expect(aChainable.chain.calledWithExactly(aFeed)).to.be.ok();
+            expect(chainable.chain.calledOnce).to.be.ok();
+            expect(chainable.chain.calledOn(chainable)).to.be.ok();
+            expect(chainable.chain.calledWithExactly(aFeed)).to.be.ok();
           });
 
           it("will return the result of chaining the feed with the chainable", function () {

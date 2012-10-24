@@ -2,21 +2,21 @@
 
 var expect = require('expect.js'),
     doubles = require('../../helpers/doubles'),
-    registry = require('../../../lib/internal/feeds/feed_factory_registry');
+    registryModule = require('../../../lib/internal/feeds/feed_factory_registry');
 
 describe('The module internal/plugins/feed_factory_registry:', function () {
   it("exports a feedFactoriesRegistry function", function () {
-    expect(registry.feedFactoriesRegistry).to.be.a('function');
+    expect(registryModule.feedFactoriesRegistry).to.be.a('function');
   });
 
   describe("Given a registry has been constructed using the exported function", function () {
-    var aRegistry;
+    var registry;
     beforeEach(function () {
-      aRegistry = registry.feedFactoriesRegistry();
+      registry = registryModule.feedFactoriesRegistry();
     });
 
     it("it has a registerFactoryFor function", function () {
-      expect(aRegistry.registerFactoryFor).to.be.a('function');
+      expect(registry.registerFactoryFor).to.be.a('function');
     });
 
     describe("given a factory has been registered,", function () {
@@ -26,11 +26,17 @@ describe('The module internal/plugins/feed_factory_registry:', function () {
         options = ['x', 'y', 'z'];
         factory = doubles.stubFunction();
 
-        aRegistry.registerFactoryFor(name, factory);
+        registry.registerFactoryFor(name, factory);
+      });
+
+      it("an attempt to register a factory again will cause an exception", function() {
+        expect(function() {
+          registry.registerFactoryFor(name, factory);
+        }).to.throwError();
       });
 
       it("factoryFor will return the asked factory", function () {
-        expect(aRegistry.factoryFor(name)).to.be(factory);
+        expect(registry.factoryFor(name)).to.be(factory);
       });
 
       describe("decorateWithPlugins when called with a chainable object and a bus factory:", function () {
@@ -39,7 +45,7 @@ describe('The module internal/plugins/feed_factory_registry:', function () {
           chainable = doubles.double(['chain']);
           bus = 'a bus';
 
-          returned = aRegistry.decorateWithPlugins(chainable, bus);
+          returned = registry.decorateWithPlugins(chainable, bus);
         });
 
         it('the returned value will be the chainable itself', function () {

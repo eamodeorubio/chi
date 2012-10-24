@@ -27,22 +27,106 @@ describe("A chi instance can be extended with plugins:", function () {
     expect(chi.registerPlugin).to.be.a('function');
   });
 
+  describe("registerPlugin will throw if:", function () {
+    describe("the 'name' parameter is not valid:", function () {
+      function checkThrows(name) {
+        expect(function () {
+          chi.registerPlugin(name, doubles.stubFunction());
+        }).to.throwError();
+      }
+
+      it('an empty string is not valid', function () {
+        checkThrows('');
+      });
+
+      it('undefined is not valid', function () {
+        checkThrows();
+      });
+
+      it('null is not valid', function () {
+        checkThrows(null);
+      });
+
+      it('a number is not valid', function () {
+        checkThrows(10);
+      });
+
+      it('a boolean is not valid', function () {
+        checkThrows(true);
+      });
+
+      it('a function is not valid', function () {
+        checkThrows(function () {
+        });
+      });
+
+      it('an object is not valid', function () {
+        checkThrows({});
+      });
+    });
+
+    describe("the 'plugin' parameter is not valid:", function () {
+      function checkThrows(plugin) {
+        expect(function () {
+          chi.registerPlugin('xx', plugin);
+        }).to.throwError();
+      }
+
+      it('a string string is not valid', function () {
+        checkThrows('yy');
+      });
+
+      it('undefined is not valid', function () {
+        checkThrows();
+      });
+
+      it('null is not valid', function () {
+        checkThrows(null);
+      });
+
+      it('a number is not valid', function () {
+        checkThrows(10);
+      });
+
+      it('a boolean is not valid', function () {
+        checkThrows(true);
+      });
+
+      it('an object is not valid', function () {
+        checkThrows({});
+      });
+    });
+
+    it("feedFactory.registerPlugin() throws", function () {
+      var name = 'xx', error = 'duplicated error', plugin = doubles.stubFunction();
+
+      feedFactory.registerPlugin.throws(error);
+
+      expect(function () {
+        chi.registerPlugin(name, plugin);
+      }).to
+          .throwException(function (e) {
+            console.log(e);
+            expect(e).to.contain(name);
+            expect(e).to.contain(': ' + error);
+          });
+    });
+  });
   describe("given registerPlugin() has been called with a name and a function, it", function () {
     var name, plugin, bus, busWithMemory;
     beforeEach(function () {
       name = "plugme";
-      bus='an emitter bus';
-      busWithMemory='an storage bus';
+      bus = 'an emitter bus';
+      busWithMemory = 'an storage bus';
       plugin = doubles.stubFunction();
 
       busModule.makeBus.returns(bus);
       busModule.makeBusWithMemory.returns(busWithMemory);
 
-
       chi.registerPlugin(name, plugin);
     });
 
-    it("will register the plugin in the states module", function () {
+    it("will register the plugin in the feed factory", function () {
       expect(feedFactory.registerPlugin.calledOnce).to.be.ok();
       expect(feedFactory.registerPlugin.calledWithExactly(name, plugin)).to.be.ok();
     });

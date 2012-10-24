@@ -29,6 +29,12 @@ describe('The module internal/plugins/state_factory:', function () {
         aRegistry.registerPlugin(name, plugin);
       });
 
+      it("an attempt to register it again will cause an exception", function() {
+        expect(function() {
+          aRegistry.registerPlugin(name, plugin);
+        }).to.throwError();
+      });
+
       describe('makeStateFor():', function () {
         var options, output;
         beforeEach(function() {

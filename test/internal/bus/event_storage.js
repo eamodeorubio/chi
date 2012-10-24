@@ -5,17 +5,17 @@ var expect = require('expect.js'),
     busModule = require('../../../lib/internal/bus');
 
 describe('An EventStorage,', function () {
-  var storage, emitter, output;
+  var storage, emitter, publish;
 
   beforeEach(function () {
     emitter = doubles.makeBus();
 
     storage = new busModule.storage(emitter);
 
-    output = storage.publish;
+    publish = storage.publish;
   });
 
-  describe('will delegate subscribtion to the emitter:', function () {
+  describe('will delegate subscription to the emitter:', function () {
     it('it has a subscribe() method', function () {
       expect(storage.subscribe).to.be.a('function');
     });
@@ -52,7 +52,7 @@ describe('An EventStorage,', function () {
         publication = doubles.stubFunction();
         emitter.publish.returns(publication);
 
-        result = output(event, data);
+        result = publish(event, data);
       });
 
       it('call the the publish method of the emitter with the same parameters', function () {
@@ -90,15 +90,15 @@ describe('An EventStorage,', function () {
         });
 
         events.forEach(function (ev) {
-          publications.push(output(ev.type, ev.data));
+          publications.push(publish(ev.type, ev.data));
         });
       });
 
-      describe('when a new object is subscribed,', function () {
+      describe('when an object that has not been susbscribed before is subscribed,', function () {
         var subscriber;
         beforeEach(function () {
           subscriber = {};
-          emitter.subscribe.returns(true);
+          emitter.subscribe.returns(false);
 
           storage.subscribe(subscriber);
         });
@@ -118,9 +118,9 @@ describe('An EventStorage,', function () {
         });
       });
 
-      it("if it is a duplicated subscriber won't be not notified again", function () {
+      it("when an object that has been susbscribed before is subscribed again, it won't be notified again", function () {
         var subscriber = {};
-        emitter.subscribe.returns(false);
+        emitter.subscribe.returns(true);
 
         storage.subscribe(subscriber);
 

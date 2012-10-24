@@ -5,14 +5,14 @@ var expect = require('expect.js'),
     busModule = require('../../../lib/internal/bus');
 
 describe('An event emitter,', function () {
-  var emitter, publicationFactory, output;
+  var emitter, publicationFactory, publish;
 
   beforeEach(function () {
     publicationFactory = doubles.stubFunction();
 
     emitter = new busModule.emitter(publicationFactory);
 
-    output = emitter.publish;
+    publish = emitter.publish;
   });
 
   it('it has a subscribe() method', function () {
@@ -40,7 +40,7 @@ describe('An event emitter,', function () {
 
       publicationFactory.returns(publication);
 
-      result = output(event, data);
+      result = publish(event, data);
     });
 
     it('call the the publication factory with the same parameters', function () {
@@ -74,7 +74,7 @@ describe('An event emitter,', function () {
           publication = doubles.stubFunction();
           publicationFactory.returns(publication);
 
-          output('some event', 'some data');
+          publish('some event', 'some data');
         });
 
         it('will call the publication() on all subscriptors exactly one time', function () {
@@ -97,7 +97,7 @@ describe('An event emitter,', function () {
         publication = doubles.stubFunction();
         publicationFactory.returns(publication);
 
-        output('an event', 'data');
+        publish('an event', 'data');
       });
 
       it('when publishing an event, it will still make the publication only once', function () {
@@ -130,7 +130,7 @@ describe('An event emitter,', function () {
         });
 
         events.forEach(function (ev) {
-          publications.push(output(ev.type, ev.data));
+          publications.push(publish(ev.type, ev.data));
         });
       });
 

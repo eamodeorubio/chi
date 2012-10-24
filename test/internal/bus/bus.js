@@ -4,31 +4,31 @@ var expect = require('expect.js'),
     doubles = require('../../helpers/doubles'),
     busModule = require('../../../lib/internal/bus');
 
-describe('An event emitter,', function () {
-  var emitter, publicationFactory, publish;
+describe('A Bus:', function () {
+  var bus, publicationFactory, publish;
 
   beforeEach(function () {
     publicationFactory = doubles.stubFunction();
 
-    emitter = new busModule.emitter(publicationFactory);
+    bus = new busModule.makeBus(publicationFactory);
 
-    publish = emitter.publish;
+    publish = bus.publish;
   });
 
   it('it has a subscribe() method', function () {
-    expect(emitter.subscribe).to.be.a('function');
+    expect(bus.subscribe).to.be.a('function');
   });
 
   it('subscribe() will return truthy if the subscriber has been subscribed before', function () {
     var subscriber = {};
 
-    expect(emitter.subscribe(subscriber)).not.to.be.ok();
-    expect(emitter.subscribe(subscriber)).to.be.ok();
-    expect(emitter.subscribe(subscriber)).to.be.ok();
+    expect(bus.subscribe(subscriber)).not.to.be.ok();
+    expect(bus.subscribe(subscriber)).to.be.ok();
+    expect(bus.subscribe(subscriber)).to.be.ok();
   });
 
   it('it has a publish() method', function () {
-    expect(emitter.publish).to.be.a('function');
+    expect(bus.publish).to.be.a('function');
   });
 
   describe("publish(), event without runtime context:", function () {
@@ -63,8 +63,8 @@ describe('An event emitter,', function () {
         subscriber1 = {};
         subscriber2 = {};
 
-        emitter.subscribe(subscriber1);
-        emitter.subscribe(subscriber2);
+        bus.subscribe(subscriber1);
+        bus.subscribe(subscriber2);
       });
 
       describe('when publishing an event, it', function () {
@@ -90,9 +90,9 @@ describe('An event emitter,', function () {
       beforeEach(function () {
         subscriber = {};
 
-        emitter.subscribe(subscriber);
-        emitter.subscribe(subscriber);
-        emitter.subscribe(subscriber);
+        bus.subscribe(subscriber);
+        bus.subscribe(subscriber);
+        bus.subscribe(subscriber);
 
         publication = doubles.stubFunction();
         publicationFactory.returns(publication);
@@ -137,7 +137,7 @@ describe('An event emitter,', function () {
       it("when a new object is subscribed, it won't be notified about the past events", function () {
         var subscriber = {};
 
-        emitter.subscribe(subscriber);
+        bus.subscribe(subscriber);
 
         expect(publications[0].called).not.to.be.ok();
         expect(publications[1].called).not.to.be.ok();

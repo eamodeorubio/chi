@@ -41,10 +41,20 @@ describe('The internal/plugins/failed module:', function () {
       });
     }
 
-    ['yields', 'throws', 'done'].forEach(cannotDoAnymore);
+    ['yields', 'throws'].forEach(cannotDoAnymore);
 
     it('when throw is invoked with the same error, it only will return itself', function () {
       expect(aFailed.throws(error)).to.be(aFailed);
+    });
+
+    describe('can process "done" events:', function () {
+      it('it has a done() method', function () {
+        expect(aFailed.done).to.be.a('function');
+      });
+
+      it('when done is invoked, it only will return itself', function () {
+        expect(aFailed.done()).to.be(aFailed);
+      });
     });
   });
 });

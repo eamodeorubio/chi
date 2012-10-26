@@ -112,6 +112,7 @@ describe("A chi instance can be extended with plugins:", function () {
           });
     });
   });
+
   describe("given registerPlugin() has been called with a name and a function, it", function () {
     var name, plugin, bus, busWithMemory;
     beforeEach(function () {
@@ -124,6 +125,12 @@ describe("A chi instance can be extended with plugins:", function () {
       busModule.makeBusWithMemory.returns(busWithMemory);
 
       chi.registerPlugin(name, plugin);
+    });
+
+    it("an attempt to register it again will cause an exception", function () {
+      expect(function () {
+        chi.registerPlugin(name, plugin);
+      }).to.throwError();
     });
 
     it("will register the plugin in the feed factory", function () {

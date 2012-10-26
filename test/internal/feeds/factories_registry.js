@@ -29,12 +29,6 @@ describe('The module internal/plugins/feed_factory_registry:', function () {
         registry.registerFactoryFor(name, factory);
       });
 
-      it("an attempt to register a factory again will cause an exception", function() {
-        expect(function() {
-          registry.registerFactoryFor(name, factory);
-        }).to.throwError();
-      });
-
       it("factoryFor will return the asked factory", function () {
         expect(registry.factoryFor(name)).to.be(factory);
       });

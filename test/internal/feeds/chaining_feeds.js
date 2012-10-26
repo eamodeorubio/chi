@@ -1,6 +1,7 @@
 "use strict";
 
 var expect = require('expect.js'),
+    sinon = require('sinon'),
     doubles = require('../../helpers/doubles'),
     feeds = require('../../../lib/internal/feeds/feed');
 
@@ -29,62 +30,69 @@ describe('A Feed can be chained:', function () {
     }).to.throwError();
   });
 
-  describe('when chain is invoked with another feed,', function () {
-    var anotherFeed, chainResult;
+  describe('when chain is invoked with a chainable object,', function () {
+    var chainable, chain;
     beforeEach(function () {
       isFeed.returns(true);
-      anotherFeed = doubles.makeFeed();
+      chainable = doubles.makeChainable();
 
-      chainResult = feed.chain(anotherFeed);
+      sinon.stub(feed, 'yields');
+      sinon.stub(feed, 'throws');
+      sinon.stub(feed, 'done');
+
+      chain = feed.chain(chainable);
+    });
+
+    afterEach(function () {
+      feed.yields.restore();
+      feed.throws.restore();
+      feed.done.restore();
     });
 
     it('will subscribe the feed to the bus', function () {
       expect(bus.subscribe.calledOnce).to.be.ok();
       expect(bus.subscribe.calledOn(bus)).to.be.ok();
-      expect(bus.subscribe.calledWithExactly(anotherFeed)).to.be.ok();
+      expect(bus.subscribe.calledWithExactly(chainable)).to.be.ok();
     });
 
-    it('it will return a non null object', function () {
-      expect(chainResult).to.be.an('object');
-      expect(chainResult).not.to.be(null);
+    it('it will return a non null chain object', function () {
+      expect(chain).to.be.an('object');
+      expect(chain).not.to.be(null);
     });
 
-    it('the object returned will have a chain() method', function () {
-      expect(chainResult.chain).to.be.a('function');
+    it('the returned chain will not have a chain() method', function () {
+      expect(chain.chain).to.be(undefined);
     });
 
-    it('the returned object will not be a feed', function () {
-      expect(feeds.isFeed(chainResult)).not.to.be.ok();
-    });
-
-    describe("the returned object's chain() method will call the chained feed's chain() method", function () {
-      var result, expectedResult, expectedArgument;
-
-      beforeEach(function () {
-        expectedArgument = 'some argument';
-        expectedResult = "returned value from chained feed's chain() method";
-
-        anotherFeed.chain.returns(expectedResult);
-
-        result = chainResult.chain(expectedArgument);
+    function willDelegateToTheFeed(methodName) {
+      it('the returned chain will have a ' + methodName + '() method', function () {
+        expect(chain[methodName]).to.be.a('function');
       });
 
-      it('only once', function () {
-        expect(anotherFeed.chain.calledOnce).to.be.ok();
-      });
+      describe('the returned chain ' + methodName + '() method will delegate to this feed ' + methodName + '() method:', function () {
+        var param, result, expectedResult;
+        beforeEach(function () {
+          feed[methodName].returns(expectedResult);
 
-      it('using the chained feed as the runtime context', function () {
-        expect(anotherFeed.chain.calledOn(anotherFeed)).to.be.ok();
-      });
+          result = chain[methodName](param);
+        });
 
-      it('using the same argument passed', function () {
-        expect(anotherFeed.chain.calledWithExactly(expectedArgument)).to.be.ok();
-      });
+        it('it will call once the method on the delegate', function () {
+          expect(feed[methodName].calledOnce).to.be.ok();
+          expect(feed[methodName].calledOn(feed)).to.be.ok();
+        });
 
-      it('and will return the resulting value', function () {
-        expect(result).to.be(expectedResult);
+        it('it will call the method on the delegate with the same parameters', function () {
+          expect(feed[methodName].calledWithExactly(param)).to.be.ok();
+        });
+
+        it('it will return the value returned by the delegate method', function () {
+          expect(result).to.be(expectedResult);
+        });
       });
-    });
+    }
+
+    ['yields', 'throws', 'done'].forEach(willDelegateToTheFeed);
   });
 
   it('chain() will throw if bus.subscribe() throws', function () {
@@ -94,5 +102,48 @@ describe('A Feed can be chained:', function () {
     expect(function () {
       feed.chain("some object");
     }).to.throwError();
+  });
+
+  describe('when chain is invoked with a feed,', function () {
+    var aFeed, chain;
+    beforeEach(function () {
+      isFeed.returns(true);
+      aFeed = doubles.makeFeed();
+
+      chain = feed.chain(aFeed);
+    });
+
+    it('the object returned will have a chain() method', function () {
+      expect(chain.chain).to.be.a('function');
+    });
+
+    describe("the returned object's chain() method will delegate to the chained feed's chain() method", function () {
+      var result, expectedResult, expectedArgument;
+
+      beforeEach(function () {
+        expectedArgument = 'some argument';
+        expectedResult = "returned value from chained feed's chain() method";
+
+        aFeed.chain.returns(expectedResult);
+
+        result = chain.chain(expectedArgument);
+      });
+
+      it('only once', function () {
+        expect(aFeed.chain.calledOnce).to.be.ok();
+      });
+
+      it('using the chained feed as the runtime context', function () {
+        expect(aFeed.chain.calledOn(aFeed)).to.be.ok();
+      });
+
+      it('using the same argument passed', function () {
+        expect(aFeed.chain.calledWithExactly(expectedArgument)).to.be.ok();
+      });
+
+      it('and will return the resulting value', function () {
+        expect(result).to.be(expectedResult);
+      });
+    });
   });
 });

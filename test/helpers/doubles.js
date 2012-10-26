@@ -9,6 +9,9 @@ function methodsOf(obj) {
 }
 
 module.exports = {
+  makeChainable:function (optName) {
+    return this.double(['yields', 'throws', 'done'], optName ? optName : "<anonymous chainable>");
+  },
   makeFeed:function (optName) {
     return this.double(['yields', 'throws', 'done', 'chain'], optName ? optName : "<anonymous feed>");
   },

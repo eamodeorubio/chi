@@ -6,24 +6,24 @@ var expect = require('expect.js'),
     feeds = require('../../../lib/internal/feeds/feed');
 
 describe('A Feed can be chained:', function () {
-  var feed, bus, initialState, isFeed;
+  var feed, bus, initialState, isChainable;
 
   beforeEach(function () {
     bus = doubles.makeBus();
 
     initialState = doubles.makeFeedState();
 
-    isFeed = doubles.stubFunction();
+    isChainable = doubles.stubFunction();
 
-    feed = feeds.feed(bus, initialState, isFeed);
+    feed = feeds.feed(bus, initialState, isChainable);
   });
 
   it('it has a chain() method', function () {
     expect(feed.chain).to.be.a('function');
   });
 
-  it('chain() will throw if isFeed returns false:', function () {
-    isFeed.returns(false);
+  it('chain() will throw if isChainable returns false:', function () {
+    isChainable.returns(false);
 
     expect(function () {
       feed.chain(doubles.makeFeed());
@@ -33,7 +33,7 @@ describe('A Feed can be chained:', function () {
   describe('when chain is invoked with a chainable object,', function () {
     var chainable, chain;
     beforeEach(function () {
-      isFeed.returns(true);
+      isChainable.returns(true);
       chainable = doubles.makeChainable();
 
       sinon.stub(feed, 'yields');
@@ -96,7 +96,7 @@ describe('A Feed can be chained:', function () {
   });
 
   it('chain() will throw if bus.subscribe() throws', function () {
-    isFeed.returns(true);
+    isChainable.returns(true);
     bus.subscribe.throws();
 
     expect(function () {
@@ -107,7 +107,7 @@ describe('A Feed can be chained:', function () {
   describe('when chain is invoked with a feed,', function () {
     var aFeed, chain;
     beforeEach(function () {
-      isFeed.returns(true);
+      isChainable.returns(true);
       aFeed = doubles.makeFeed();
 
       chain = feed.chain(aFeed);

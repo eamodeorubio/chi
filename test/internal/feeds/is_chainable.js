@@ -6,7 +6,7 @@ var expect = require('expect.js'),
 
 describe('isFeed():', function () {
   it('a null is not a feed', function () {
-    expect(feeds.isFeed(null)).not.to.be.ok();
+    expect(feeds.isChainable(null)).not.to.be.ok();
   });
 
   function objectWithoutThisMethodIsNotAFeed(methodName) {
@@ -14,13 +14,13 @@ describe('isFeed():', function () {
       var almostAFeed = doubles.makeFeed();
       delete almostAFeed[methodName];
 
-      expect(feeds.isFeed(almostAFeed)).not.to.be.ok();
+      expect(feeds.isChainable(almostAFeed)).not.to.be.ok();
     });
   }
 
-  ['yields', 'throws', 'done', 'chain'].forEach(objectWithoutThisMethodIsNotAFeed);
+  ['yields', 'throws', 'done'].forEach(objectWithoutThisMethodIsNotAFeed);
 
-  it('an object with "yield", "throw", "done" and "chain" method is a feed', function () {
-    expect(feeds.isFeed(doubles.makeFeed())).to.be.ok();
+  it('an object with "yield", "throw" and "done" methods is a feed', function () {
+    expect(feeds.isChainable(doubles.makeChainable())).to.be.ok();
   });
 });

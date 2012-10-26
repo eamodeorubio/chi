@@ -20,15 +20,15 @@ describe('The internal/plugins/unit module:', function () {
   });
 
   describe("the registered plugin will create an object that", function () {
-    var output, factory, anUnit;
+    var emit, makeState, anUnit;
     beforeEach(function () {
       unit(chi);
 
       var unitPlugin = chi.registerPlugin.lastCall.args[1];
-      output = doubles.stubFunction();
-      factory = doubles.stubFunction();
+      emit = doubles.stubFunction();
+      makeState = doubles.stubFunction();
 
-      anUnit = unitPlugin(output, factory);
+      anUnit = unitPlugin(emit, makeState);
     });
 
     function canProcess(eventType) {
@@ -50,9 +50,9 @@ describe('The internal/plugins/unit module:', function () {
             expect(result).to.be(anUnit);
           });
 
-          it('will publish exactly once the "' + eventType + '" event on the bus with the data', function () {
-            expect(output.calledOnce).to.be.ok();
-            expect(output.calledWithExactly(eventType, data)).to.be.ok();
+          it('will emit exactly once the "' + eventType + '" event on the bus with the data', function () {
+            expect(emit.calledOnce).to.be.ok();
+            expect(emit.calledWithExactly(eventType, data)).to.be.ok();
           });
         });
       });
@@ -70,21 +70,21 @@ describe('The internal/plugins/unit module:', function () {
 
         beforeEach(function () {
           aSuccess = {};
-          factory.returns(aSuccess);
+          makeState.returns(aSuccess);
 
           result = anUnit.done();
         });
 
-        it('will return a "success"', function () {
-          expect(factory.calledOnce).to.be.ok();
-          expect(factory.calledWithExactly('success')).to.be.ok();
+        it('will return a "success" state', function () {
+          expect(makeState.calledOnce).to.be.ok();
+          expect(makeState.calledWithExactly('success')).to.be.ok();
 
           expect(result).to.be(aSuccess);
         });
 
-        it('publish exactly once the "done" event on the bus', function () {
-          expect(output.calledOnce).to.be.ok();
-          expect(output.calledWithExactly('done')).to.be.ok();
+        it('emit once the "done" event on the bus', function () {
+          expect(emit.calledOnce).to.be.ok();
+          expect(emit.calledWithExactly('done')).to.be.ok();
         });
       });
     });

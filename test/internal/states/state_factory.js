@@ -30,24 +30,24 @@ describe('The module internal/plugins/state_factory:', function () {
       });
 
       describe('makeStateFor():', function () {
-        var options, output;
-        beforeEach(function() {
+        var options, emit;
+        beforeEach(function () {
           options = ['x', 'y', 'z'];
-          output='some output';
+          emit = 'some emitter';
         });
 
         it("when called with a non existent plugin name, it will return undefined", function () {
-          expect(aRegistry.makeStateFor('not exists', output, options)).to.be(undefined);
+          expect(aRegistry.makeStateFor('not exists', emit, options)).to.be(undefined);
         });
 
-        describe('when called with an existing plugin name and some output and options, it will', function () {
-          var result, output, expectedResult;
+        describe('when called with an existing plugin name and some emitter and options, it will', function () {
+          var result, expectedResult;
 
           beforeEach(function () {
             expectedResult = {};
             plugin.returns(expectedResult);
 
-            result = aRegistry.makeStateFor(name, output, options);
+            result = aRegistry.makeStateFor(name, emit, options);
           });
 
           it("call the specified plugin once", function () {
@@ -62,8 +62,8 @@ describe('The module internal/plugins/state_factory:', function () {
             expect(plugin.lastCall.args.length).to.be(3);
           });
 
-          it("call the plugin with the output as 1st argument", function () {
-            expect(plugin.lastCall.args[0]).to.be(output);
+          it("call the plugin with the emitter as 1st argument", function () {
+            expect(plugin.lastCall.args[0]).to.be(emit);
           });
 
           it("call the plugin with a function as 2nd argument", function () {
@@ -74,10 +74,10 @@ describe('The module internal/plugins/state_factory:', function () {
             expect(plugin.lastCall.args[2]).to.be(options);
           });
 
-          describe('the function passed as 2nd argument to the plugin is another state factory with its output binded to the original one', function () {
-            var factoryBindedToOutput;
+          describe('the function passed as 2nd argument to the plugin is another state factory with its emitter binded to the original one', function () {
+            var factoryBindedToEmitter;
             beforeEach(function () {
-              factoryBindedToOutput = plugin.lastCall.args[1];
+              factoryBindedToEmitter = plugin.lastCall.args[1];
             });
 
             describe("it will", function () {
@@ -89,7 +89,7 @@ describe('The module internal/plugins/state_factory:', function () {
                 plugin.reset();
                 plugin.returns(anotherState);
 
-                anotherResult = factoryBindedToOutput(name, newOptions);
+                anotherResult = factoryBindedToEmitter(name, newOptions);
               });
 
               it("call the specified plugin once", function () {
@@ -104,12 +104,12 @@ describe('The module internal/plugins/state_factory:', function () {
                 expect(plugin.lastCall.args.length).to.be(3);
               });
 
-              it("call the plugin with the original output as first argument", function () {
-                expect(plugin.lastCall.args[0]).to.be(output);
+              it("call the plugin with the original emitter as first argument", function () {
+                expect(plugin.lastCall.args[0]).to.be(emit);
               });
 
               it("call the plugin with the state factory itself as 2nd argument", function () {
-                expect(plugin.lastCall.args[1]).to.be(factoryBindedToOutput);
+                expect(plugin.lastCall.args[1]).to.be(factoryBindedToEmitter);
               });
 
               it("call the plugin with the options as 3rd argument", function () {

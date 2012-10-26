@@ -51,12 +51,12 @@ describe('The internal/plugins/unit module:', function () {
 
         it('will publish exactly once the "yield" event on the bus with the data', function () {
           expect(output.calledOnce).to.be.ok();
-          expect(output.calledWithExactly('yield', data)).to.be.ok();
+          expect(output.calledWithExactly('yields', data)).to.be.ok();
         });
       });
     });
 
-    describe('can process "throw" events:', function () {
+    describe('can process "throws" events:', function () {
       it('it has a throw() method', function () {
         expect(anUnit.throws).to.be.a('function');
       });
@@ -79,9 +79,9 @@ describe('The internal/plugins/unit module:', function () {
           expect(result).to.be(aFailed);
         });
 
-        it('publish exactly once the "throw" event on the bus with the throwed error', function () {
+        it('publish exactly once the "throws" event on the bus with the throwed error', function () {
           expect(output.calledOnce).to.be.ok();
-          expect(output.calledWithExactly('throw', error)).to.be.ok();
+          expect(output.calledWithExactly('throws', error)).to.be.ok();
         });
       });
     });

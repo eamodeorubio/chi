@@ -72,11 +72,8 @@ describe('The internal/plugins/unit module:', function () {
           result = anUnit.throws(error);
         });
 
-        it('will return a "failed" with the thrown error', function () {
-          expect(factory.calledOnce).to.be.ok();
-          expect(factory.calledWithExactly('failed', [error])).to.be.ok();
-
-          expect(result).to.be(aFailed);
+        it('will return itself (allow error handling)', function () {
+          expect(result).to.be(anUnit);
         });
 
         it('publish exactly once the "throws" event on the bus with the throwed error', function () {

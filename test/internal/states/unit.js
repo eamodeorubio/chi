@@ -31,57 +31,34 @@ describe('The internal/plugins/unit module:', function () {
       anUnit = unitPlugin(output, factory);
     });
 
-    describe('can process "yield" events:', function () {
-      it('it has a yield() method', function () {
-        expect(anUnit.yields).to.be.a('function');
-      });
-
-      describe('when yield is invoked with some data, it', function () {
-        var result, data;
-
-        beforeEach(function () {
-          data = "some data";
-
-          result = anUnit.yields(data);
+    function canProcess(eventType) {
+      describe('can process "' + eventType + '" events:', function () {
+        it('it has a ' + eventType + '() method', function () {
+          expect(anUnit[eventType]).to.be.a('function');
         });
 
-        it('will return the state itself', function () {
-          expect(result).to.be(anUnit);
-        });
+        describe('when ' + eventType + ' is invoked with some data, it', function () {
+          var result, data;
 
-        it('will publish exactly once the "yield" event on the bus with the data', function () {
-          expect(output.calledOnce).to.be.ok();
-          expect(output.calledWithExactly('yields', data)).to.be.ok();
-        });
-      });
-    });
+          beforeEach(function () {
+            data = "some data";
 
-    describe('can process "throws" events:', function () {
-      it('it has a throw() method', function () {
-        expect(anUnit.throws).to.be.a('function');
-      });
+            result = anUnit[eventType](data);
+          });
 
-      describe('when throw is invoked with an error, it', function () {
-        var result, error, aFailed;
+          it('will return the state itself', function () {
+            expect(result).to.be(anUnit);
+          });
 
-        beforeEach(function () {
-          error = "some error";
-          aFailed = {};
-          factory.returns(aFailed);
-
-          result = anUnit.throws(error);
-        });
-
-        it('will return itself (allow error handling)', function () {
-          expect(result).to.be(anUnit);
-        });
-
-        it('publish exactly once the "throws" event on the bus with the throwed error', function () {
-          expect(output.calledOnce).to.be.ok();
-          expect(output.calledWithExactly('throws', error)).to.be.ok();
+          it('will publish exactly once the "' + eventType + '" event on the bus with the data', function () {
+            expect(output.calledOnce).to.be.ok();
+            expect(output.calledWithExactly(eventType, data)).to.be.ok();
+          });
         });
       });
-    });
+    }
+
+    ['yields', 'throws'].forEach(canProcess);
 
     describe('can process "done" events:', function () {
       it('it has a done() method', function () {
